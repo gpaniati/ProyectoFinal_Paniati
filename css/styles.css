@@ -1,0 +1,160 @@
+/* VARIABLES GENERALES */
+/* Fuentes */
+/* Colores */
+/* Background Colors */
+/* Titulos Colors */
+/* Botones Colors */
+/* FIN VARIABLES GENERALES */
+/* Reseteo CSS */
+* {
+  font-family: "Baloo 2", cursive;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+h2 {
+  color: #005500;
+  font-weight: bold;
+  font-size: 30px;
+  padding: 10px;
+  text-shadow: 1px 1px 2px white, 0 0 25px turquoise, 0 0 5px darkblue;
+  font-family: "Kaushan Script", cursive;
+  text-align: center;
+}
+
+h3,
+h4 {
+  color: #000000;
+  padding: 10px;
+  text-shadow: 1px 1px 2px white, 0 0 25px turquoise, 0 0 5px darkblue;
+  font-family: "Kaushan Script", cursive;
+}
+
+/* Importacion de archivos */
+/* HEADER */
+.header {
+  background: linear-gradient(90deg, rgba(248, 180, 8, 0.6901960784) 0%, rgba(248, 180, 8, 0.6901960784) 30%, #40e0d0 100%);
+}
+.header .container-fluid {
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+.header .container-fluid h1 {
+  font-size: 35px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px white, 0 0 25px turquoise, 0 0 5px darkblue;
+  font-family: "Kaushan Script", cursive;
+  margin: 0;
+}
+.header .container-fluid img {
+  height: 88px;
+}
+
+/* FIN HEADER */
+
+/* INICIO JumboTron */
+.jumbotron h2 {
+  text-align: center;
+  font-size: 50px;
+}
+
+.jumboIndex{
+  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("../images/jumbotron/Index.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 0;
+}
+.jumboIndex p{
+  color: #ffffff;
+}
+.jumboIndex .boton, .jumboIndex .botonReserva{
+  margin-left: 0px;
+}
+
+#titleBemvinda {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+#textBemvinda {
+  font-size: 18px;
+}
+/* FIN JumboTron */
+
+/* MAIN */
+.principal {
+  background-image: url("../images/praias/fondo.webp");
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+}
+.principal .articulo1 {
+  background-image: url(../images/portadakukis.webp);
+  background-size: cover;
+  background-position: center;
+  height: 550px;
+}
+.principal .articulo2 h3 {
+  margin-top: 20px;
+  text-align: center;
+}
+.principal .articulo2 p {
+  padding: 5px;
+}
+/* FIN MAIN */
+
+/* FOOTER */
+.footer {
+  background: linear-gradient(90deg, #434343 0%, #434343 30%, #00ced1 100%);
+  color: white;
+  font-size: 14px;
+  padding: 5px;
+}
+.footer .ubicacion {
+  display: flex;
+  align-items: center;
+}
+.footer .ubicacion p {
+  margin-left: 10px;
+  margin-top: 2.5px;
+  margin-bottom: 0;
+}
+.footer .redes {
+  text-align: center;
+}
+.footer .redes i {
+  letter-spacing: 10px;
+  font-size: 20px;
+}
+.footer .redes a {
+  text-decoration: none;
+  color: #ffffff;
+}
+.footer p {
+  text-align: center;
+}
+/* FIN FOOTER */
+
+/* BOTON */
+.boton{
+  color: rgb(255, 255, 255);
+  background-color: #373737;
+  padding: 10px 20px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+  border: 1px solid rgb(55, 55, 55);
+  border-radius: 30px;
+}
+.boton:hover {
+  background-color: #75acec;
+}
+/* FIN BOTON */
