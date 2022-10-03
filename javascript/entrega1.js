@@ -53,23 +53,23 @@ if (cantidadDeHuespedes > 2){
     }while ((aireAcondicionado != "S")&&(aireAcondicionado != "N"))
 
     //Tipo de Pago.
-    let tipoDePago;
-    let tipoDePagoValido;
+    let formaDePago;
+    let formaDePagoValido;
     do{
-        tipoDePagoValido = true;
-        tipoDePago = (prompt("Ingrese la forma de pago - EFECTIVO, DEBITO, TARJETA\n**El pago en efectivo tiene un 10% de descuento")).toUpperCase();
-        if ((tipoDePago != "EFECTIVO")&&(tipoDePago != "DEBITO")&&(tipoDePago != "TARJETA")){
+        formaDePagoValido = true;
+        formaDePago = (prompt("Ingrese la forma de pago - EFECTIVO, DEBITO, TARJETA\n**El pago en efectivo tiene un 10% de descuento")).toUpperCase();
+        if ((formaDePago != "EFECTIVO")&&(formaDePago != "DEBITO")&&(formaDePago != "TARJETA")){
             alert("Tipo de pago invalido; vuelva a ingresarlo...");
-            tipoDePagoValido = false;
+            formaDePagoValido = false;
         }
-    }while (tipoDePagoValido == false)
+    }while (formaDePagoValido == false)
 
     //Cantidad de cuotas en el caso de pago con TARJETA.
     let cantidadCuotas = 0;
-    if (tipoDePago == "DEBITO"){
+    if (formaDePago == "DEBITO"){
         cantidadCuotas = 1;
     }
-    if (tipoDePago == "TARJETA"){
+    if (formaDePago == "TARJETA"){
         do{
             cantidadCuotas = prompt("Ingrese la cantidad de cuotas a pagar con TARJETA - (Máximo 12 cuotas)")
         }while ((cantidadCuotas <= 0)||(cantidadCuotas > 12))
@@ -87,12 +87,12 @@ if (cantidadDeHuespedes > 2){
     let costoFinalSinDescuento = (costoSinImpuestos + costoAdicional + costoImpuestos);
     //Calculo descuento si pago en EFECTIVO
     let descuento = 0;
-    if (tipoDePago == "EFECTIVO"){
+    if (formaDePago == "EFECTIVO"){
         descuento = calcularDescuento(costoFinalSinDescuento);
     }
     let costoFinalConDescuento = (costoFinalSinDescuento - descuento);
 
-    alert("Resumer de su operación para la estadía en Kuki's Hostel:\n\nCantidad de días = "+cantidadDeDias+"\nCantidad de huéspedes = "+cantidadDeHuespedes+"\nTipo de habitación = "+devolverTipoDeHabitacion(tipoDeHabitacion)+"\nTipo de pago = "+tipoDePago+"\nCantidad de cuotas = "+cantidadCuotas+"\nPrecio de hoy = R$ "+costoSinImpuestos+"\nAdicional por uso de AACC = R$ "+costoAdicional+"\nImpuestos y cargos = R$ "+costoImpuestos+"\nDescuento del 10% por pago en EFECTIVO = R$ -"+descuento+"\n\nPrecio Final = R$ "+costoFinalConDescuento);
+    alert("Resumen de su operación para la estadía en Kuki's Hostel:\n\nCantidad de días = "+cantidadDeDias+"\nCantidad de huéspedes = "+cantidadDeHuespedes+"\nTipo de habitación = "+devolverTipoDeHabitacion(tipoDeHabitacion)+"\nForma de pago = "+formaDePago+"\nCantidad de cuotas = "+cantidadCuotas+" cuotas\nPrecio de hoy = R$ "+costoSinImpuestos+"\nAdicional por uso de AACC = R$ "+costoAdicional+"\nImpuestos y cargos = R$ "+costoImpuestos+"\nDescuento del 10% por pago en EFECTIVO = R$ -"+descuento+"\n\nPrecio Final = R$ "+costoFinalConDescuento);
     
     alert("GRACIAS POR SU COMPRA - DISFRUTE SU ESTADIA");
         
