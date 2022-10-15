@@ -17,12 +17,22 @@ if (cantidadDeHuespedes > 5){
         cantidadDeDias = prompt("Ingrese la cantidad de días que desea hospedarse");
     }while (cantidadDeDias <= 0)
 
-    //Elegir tipo de habitación.
+    //ELEGIR TIPO DE HABITACION.
+    //Filtro las habitaciones a mostrar de acuerdo a la cantidad de huespedes.
+    let habitacionesDisponibles = habitaciones.filter((habitacion) => habitacion.capacidad >= cantidadDeHuespedes);
+    
+    let mensajeTipoDeHabitacion = "Ingrese el tipo de habitación deseada: \n";
+    for (habitacion of habitacionesDisponibles){
+        mensajeTipoDeHabitacion += (`${habitacion.idHabitacion} - Habitación: ${habitacion.nombreHabitacion} - Precio por persona/día: $R${habitacion.precioPorPersona} - Capacidad: ${habitacion.capacidad} - Baño: ${habitacion.tipoBanio} \n`)    
+    }
+
+    //Selecciono la habitacion.
     let habitacionCorrecta = false;
     let tipoDeHabitacion;
     do{
-        tipoDeHabitacion = prompt("Ingrese el tipo de habitación deseada:\n1 - HABITACION DOBLE CON BAÑO PRIVADO\n(R$ 130,00 / Persona-Día)\n\n2 - HABITACION DOBLE CON BAÑO COMPARTIDO\n(R$ 90,00 / Persona-Día)\n\n3 - HABITACION COMPARTIDA CON BAÑO PRIVADO\n(R$ 60,00 / Persona-Día)\n\n4 - HABITACION COMPARTIDA CON BAÑO COMPARTIDO\n(R$ 35,00 / Persona-Día)\n\n**NO incluye impuestos");
-        if ((tipoDeHabitacion == 1)||(tipoDeHabitacion == 2)||(tipoDeHabitacion == 3)||(tipoDeHabitacion == 4)){
+        tipoDeHabitacion = prompt(mensajeTipoDeHabitacion);
+        const habitacionEncontrada = habitacionesDisponibles.find((habitacion) => habitacion.idHabitacion == tipoDeHabitacion);
+        if (habitacionEncontrada != undefined){
             habitacionCorrecta = true;}
         else{
             alert("Tipo de habitación invalida; vuelva a ingresarla...")
@@ -31,7 +41,7 @@ if (cantidadDeHuespedes > 5){
         
     //Adicional Aire Acondicionado.
     let aireAcondicionado;
-    do{
+    do{ 
         aireAcondicionado = (prompt("Desea sumar el costo adicional por uso del Aire Acondicionado? (S/N)\nR$ 2,00/día\n\n**NO incluye impuestos")).toUpperCase();
     }while ((aireAcondicionado != "S")&&(aireAcondicionado != "N"))
 

@@ -26,3 +26,4 @@ habitaciones.push(new Habitacion(3, "caju", 80, 3, "privado"));
 habitaciones.push(new Habitacion(4, "acai", 60, 5, "privado"));
 habitaciones.push(new Habitacion(5, "coco", 80, 4, "privado"));
 habitaciones.push(new Habitacion(6, "mamao", 130, 2, "privado"));
+console.log(habitaciones);
