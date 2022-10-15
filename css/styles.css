@@ -76,8 +76,16 @@ h4 {
 .jumboIndex p{
   color: #ffffff;
 }
-.jumboIndex .boton, .jumboIndex .botonReserva{
+.jumboIndex .boton, .jumboQuartos .boton{
   margin-left: 0px;
+}
+
+.jumboQuartos {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("../images/jumbotron/Quartos.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 0;
 }
 
 #titleBemvinda {
@@ -111,6 +119,68 @@ h4 {
   padding: 5px;
 }
 /* FIN MAIN */
+
+/* MAIN QUARTOS/SERVICIOS */
+.quartos {
+  margin-top: 40px;
+}
+.quartos .carta {
+  margin-top: 30px;
+}
+.quartos .carta .card-img-top {
+  border-radius: 30px;
+  opacity: 0.9;
+}
+.quartos .carta ul {
+  list-style-type: none;
+  font-style: italic !important;
+  text-align: left;
+  list-style-image: none;
+  -webkit-padding-start: 10px;
+          padding-inline-start: 10px;
+}
+
+/*Quartos*/
+.quartos .carta .card-img-quarto1 {
+  content: url("../images/quartos/manga.webp");
+  box-shadow: inset 1px 2px black, 0 0 25px rgb(90, 92, 91), 0 0 5px rgb(218, 218, 218);
+}
+
+.quartos .carta .card-img-quarto2 {
+  content: url("../images/quartos/abacaxi.webp");
+  box-shadow: inset 1px 2px black, 0 0 25px rgb(90, 92, 91), 0 0 5px rgb(218, 218, 218);
+}
+
+.quartos .carta .card-img-quarto3 {
+  content: url("../images/quartos/caju.webp");
+  box-shadow: inset 1px 2px black, 0 0 25px rgb(90, 92, 91), 0 0 5px rgb(218, 218, 218);
+}
+
+.quartos .carta .card-img-quarto4 {
+  content: url("../images/quartos/acai.webp");
+  box-shadow: inset 1px 2px black, 0 0 25px rgb(90, 92, 91), 0 0 5px rgb(218, 218, 218);
+}
+
+.quartos .carta .card-img-quarto5 {
+  content: url("../images/quartos/coco.webp");
+  box-shadow: inset 1px 2px black, 0 0 25px rgb(90, 92, 91), 0 0 5px rgb(218, 218, 218);
+}
+
+.quartos .carta .card-img-quarto6 {
+  content: url("../images/quartos/mamao.webp");
+  box-shadow: inset 1px 2px black, 0 0 25px rgb(90, 92, 91), 0 0 5px rgb(218, 218, 218);
+}
+
+/* Fin Mapa de Quartos */
+.servicios ul {
+  list-style-type: none;
+  font-style: normal !important;
+  text-align: left;
+  list-style-image: url("../images/icons8-ok-16.png");
+  padding-left: 40px;
+  padding-bottom: 40px;
+}
+/* FIN QUARTOS/SERVICIOS */
 
 /* FOOTER */
 .footer {
@@ -157,4 +227,40 @@ h4 {
 .boton:hover {
   background-color: #75acec;
 }
-/* FIN BOTON */
+
+.botonReserva {
+  -webkit-animation-name: titilar;
+          animation-name: titilar;
+  -webkit-animation-duration: 1s;
+          animation-duration: 1s;
+  -webkit-animation-direction: alternate;
+          animation-direction: alternate;
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  box-shadow: 1px 1px 2px black, 0 0 25px turquoise, 0 0 5px darkturquoise;
+}
+
+/* Animaciones Titilar */
+@-webkit-keyframes titilar {
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes titilar {
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+/* FIN BOTONES */
