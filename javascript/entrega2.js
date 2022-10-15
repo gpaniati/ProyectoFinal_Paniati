@@ -1,21 +1,4 @@
-//Constantes.
-//TIPOS DE HABITACION.
-//Habitacion Doble con baño privado / PRECIOS.
-const DOBLEBPRIV = 1;
-const DOBLEBPRIVPRECIO = 130.00;
-//Habitacion Doble con baño compartido.
-const DOBLEBCOMP = 2;
-const DOBLEBCOMPPRECIO = 90.00;
-//Habitabion compartida con baño privado.
-const COMPARTIDABPRIV = 3;
-const COMPARTIDABPRIVPRECIO = 60.00;
-//Habitabion compartida con baño compartido.
-const COMPARTIDABCOMP = 4;
-const COMPARTIDABCOMPPRECIO = 35.00;
-//Adicional Aire Acondionado/día.
-const ADICAACC = 2.00;
-
-// Bienvendida y solicitud de su nombre
+// Bienvendida y solicitud de su nombre.
 let nombreHuesped1 = (prompt("Bienvenido/a a Kuki's Hotel !!!\nIngrese su nombre")).toUpperCase();
 alert("Bienvenido/a "+nombreHuesped1+"!!!");
 
@@ -24,10 +7,10 @@ let cantidadDeHuespedes;
 let cantidadDeDias;
 
 do{
-    cantidadDeHuespedes = prompt("Ingrese la cantidad de huéspedes para alojar (Máximo 2 por operación)");
+    cantidadDeHuespedes = prompt("Ingrese la cantidad de huéspedes para alojar (Máximo 5 por operacion)");
 }while (cantidadDeHuespedes <= 0)
-if (cantidadDeHuespedes > 2){
-    alert("Debe efectuar la reserva en grupo de máximo 2 huéspedes por operación.\nVuelva a intentar.");
+if (cantidadDeHuespedes > 5){
+    alert("Debe efectuar la reserva en grupo de máximo 5 huéspedes por operación.\nVuelva a intentar.");
 }else{
     //Ingresar la cantidad de dias de la estadía.
     do{
