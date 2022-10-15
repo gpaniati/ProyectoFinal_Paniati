@@ -1,3 +1,5 @@
+const carritoHabitaciones = [];
+const carritoServicios = [];
 // Bienvendida y solicitud de su nombre.
 let nombreHuesped1 = (prompt("Bienvenido/a a Kuki's Hotel !!!\nIngrese su nombre")).toUpperCase();
 alert("Bienvenido/a "+nombreHuesped1+"!!!");
@@ -17,35 +19,72 @@ if (cantidadDeHuespedes > 5){
         cantidadDeDias = prompt("Ingrese la cantidad de días que desea hospedarse");
     }while (cantidadDeDias <= 0)
 
-    //ELEGIR TIPO DE HABITACION.
+    //ELEGIR HABITACION.
     //Filtro las habitaciones a mostrar de acuerdo a la cantidad de huespedes.
-    let habitacionesDisponibles = habitaciones.filter((habitacion) => habitacion.capacidad >= cantidadDeHuespedes);
+    let habitacionesDisponibles = habitaciones.filter((habitacion) => ((habitacion.capacidad >= cantidadDeHuespedes)&&(habitacion.estaOcupada() == false)));
     
     let mensajeTipoDeHabitacion = "Ingrese el tipo de habitación deseada: \n";
     for (habitacion of habitacionesDisponibles){
-        mensajeTipoDeHabitacion += (`${habitacion.idHabitacion} - Habitación: ${habitacion.nombreHabitacion} - Precio por persona/día: $R${habitacion.precioPorPersona} - Capacidad: ${habitacion.capacidad} - Baño: ${habitacion.tipoBanio} \n`)    
+        mensajeTipoDeHabitacion += (`${habitacion.idHabitacion} - Habitación: ${habitacion.nombreHabitacion} - Precio por per/día: $R${habitacion.precioPorPersona} - Capacidad: ${habitacion.capacidad} - Baño: ${habitacion.tipoBanio} \n`)    
     }
 
     //Selecciono la habitacion.
     let habitacionCorrecta = false;
     let tipoDeHabitacion;
+    let habitacionEncontrada;
     do{
         tipoDeHabitacion = prompt(mensajeTipoDeHabitacion);
-        const habitacionEncontrada = habitacionesDisponibles.find((habitacion) => habitacion.idHabitacion == tipoDeHabitacion);
+        habitacionEncontrada = habitacionesDisponibles.find((habitacion) => habitacion.idHabitacion == tipoDeHabitacion);
         if (habitacionEncontrada != undefined){
-            habitacionCorrecta = true;}
-        else{
+            habitacionCorrecta = true;
+            habitaciones[(habitacionEncontrada.idHabitacion)-1].marcarOcupada(); 
+        }else{
             alert("Tipo de habitación invalida; vuelva a ingresarla...")
         }
     }while (habitacionCorrecta == false)
-        
-    //Adicional Aire Acondicionado.
-    let aireAcondicionado;
-    do{ 
-        aireAcondicionado = (prompt("Desea sumar el costo adicional por uso del Aire Acondicionado? (S/N)\nR$ 2,00/día\n\n**NO incluye impuestos")).toUpperCase();
-    }while ((aireAcondicionado != "S")&&(aireAcondicionado != "N"))
+    agregarACarritoDeHabitaciones(habitacionEncontrada);
 
-    //Tipo de Pago.
+
+    //ELEGIR SERVICIOS
+    let mensajeServicios= "Ingrese el/los servicios que desee contratar: (FIN para salir) \n";
+    for (servicio of servicios){
+        mensajeServicios += (`${servicio.idServicio} - Servicio: ${servicio.nombreServicio} - Precio por día: $R${servicio.precioPorDia}\n`)    
+    }
+    //Selecciono servicios.
+    let tipoDeServicio;
+    let servicioEncontrado;
+    let servicioYaElegido = false;
+    do{ 
+        tipoDeServicio = (prompt(mensajeServicios)).toUpperCase();
+        //Busco si existe el id del servicio elegido.
+        servicioEncontrado = servicios.find((servicio) => servicio.idServicio == tipoDeServicio);
+        //Busco si el servicio ya fue seleccionado en el carrito de servicios.
+        servicioYaElegido = carritoServicios.some((servicio) => servicio.idServicio == tipoDeServicio);
+        if ((servicioEncontrado != undefined) && (tipoDeServicio != "FIN") && (servicioYaElegido == false)){
+            agregarACarritoDeServicios(servicioEncontrado); 
+            alert("SERVICIO AÑADIDO CORRECTAMENTE, Continue eligiendo o salga con FIN")
+        }else{
+            if (tipoDeServicio != "FIN"){
+                if (servicioYaElegido == false){
+                    alert("Tipo de servicio invalido; vuelva a ingresarlo...");
+                }else{
+                    alert("Servicio ya elegido; ingrese otro o salga con (FIN)" );
+                }
+            }
+        }
+    }while (tipoDeServicio != "FIN")
+
+    function agregarACarritoDeHabitaciones(habitacion) {
+        carritoHabitaciones.push(habitacion);
+        console.table(carritoHabitaciones);
+    }
+
+    function agregarACarritoDeServicios(servicio) {
+        carritoServicios.push(servicio);
+        console.table(carritoServicios);
+    }
+
+    //TIPO DE PAGO.
     let formaDePago;
     let formaDePagoValido;
     do{
@@ -69,15 +108,46 @@ if (cantidadDeHuespedes > 5){
         
     }
 
-    //COSTO FINAL
-    let costoSinImpuestos = calcularCostoSinImpuestos(tipoDeHabitacion,cantidadDeDias,cantidadDeHuespedes);
-    let costoAdicional = 0;
-    //Calculo adicional por uso de AACC
-    if (aireAcondicionado == "S"){
-        costoAdicional = calcularCostoAdicional(cantidadDeDias);
+    //COSTO FINAL con comprobante.
+    let textoComprobante = "Resumen de su operación para la estadía en Kuki's Hostel:\n\nCantidad de días = "+cantidadDeDias+"\nCantidad de huéspedes = "+cantidadDeHuespedes+"\nForma de pago = "+formaDePago+"\nCantidad de cuotas = "+cantidadCuotas;
+    
+    //Recorro CARRITO DE HABITACIONES y calculo precios.
+    let precioHabitacion = 0;
+    let ivaHabitacion = 0;
+    textoComprobante += "\n\nHABITACIONES"
+    for (let i = 0; i<carritoHabitaciones.length; i++){
+        precioHabitacion = carritoHabitaciones[i].calcularPrecioHabitacion(cantidadDeHuespedes,cantidadDeDias);
+        ivaHabitacion = carritoHabitaciones[i].calcularIvaHabitacion(cantidadDeHuespedes,cantidadDeDias);
+        textoComprobante += `\nHabitacion: ${carritoHabitaciones[i].nombreHabitacion}\nPrecio Habitacion: $R ${precioHabitacion}\nIva Habitación: $R ${ivaHabitacion}\n`;
     }
-    let costoImpuestos = calcularImpuestos(costoSinImpuestos + costoAdicional);
-    let costoFinalSinDescuento = (costoSinImpuestos + costoAdicional + costoImpuestos);
+
+    //Total acumulado de habitaciones.
+    let precioHabitaciones = carritoHabitaciones.reduce((acumulador,habitacion) => acumulador+habitacion.calcularPrecioHabitacion(cantidadDeHuespedes,cantidadDeDias),0);
+    let ivaHabitaciones = carritoHabitaciones.reduce((acumulador,habitacion) => acumulador+habitacion.calcularIvaHabitacion(cantidadDeHuespedes,cantidadDeDias),0);
+    alert(textoComprobante);
+    
+
+    //Recorro CARRITO DE SERVICIO y calculo precios.
+    let precioServicio = 0;
+    let ivaServicio = 0;
+    textoComprobante = "\nSERVICIOS"
+    if (carritoServicios.length == 0){
+        textoComprobante += "\nSin servicio contratados..."
+    }
+
+    for (let i = 0; i<carritoServicios.length; i++){
+        precioServicio = carritoServicios[i].calcularPrecioServicio(cantidadDeDias);
+        ivaServicio = carritoServicios[i].calcularIvaServicio(cantidadDeDias);
+        textoComprobante += `\nServicio: ${carritoServicios[i].nombreServicio}\nPrecio Servicio: $R ${precioServicio}\nIva Servicio: $R ${ivaServicio}\n`;
+    }
+
+    //Total acumulado de servicios.
+    let precioServicios = carritoServicios.reduce((acumulador,servicio) => acumulador+servicio.calcularPrecioServicio(cantidadDeDias),0);
+    let ivaServicios = carritoServicios.reduce((acumulador,servicio) => acumulador+servicio.calcularIvaServicio(cantidadDeDias),0);
+    alert(textoComprobante);
+
+    //TOTALES FINALES
+    let costoFinalSinDescuento = precioHabitaciones + ivaHabitaciones + precioServicios + ivaServicios;
     //Calculo descuento si pago en EFECTIVO
     let descuento = 0;
     if (formaDePago == "EFECTIVO"){
@@ -85,69 +155,12 @@ if (cantidadDeHuespedes > 5){
     }
     let costoFinalConDescuento = (costoFinalSinDescuento - descuento);
 
-    alert("Resumen de su operación para la estadía en Kuki's Hostel:\n\nCantidad de días = "+cantidadDeDias+"\nCantidad de huéspedes = "+cantidadDeHuespedes+"\nTipo de habitación = "+devolverTipoDeHabitacion(tipoDeHabitacion)+"\nForma de pago = "+formaDePago+"\nCantidad de cuotas = "+cantidadCuotas+" cuotas\nPrecio de hoy = R$ "+costoSinImpuestos+"\nAdicional por uso de AACC = R$ "+costoAdicional+"\nImpuestos y cargos = R$ "+costoImpuestos+"\nDescuento del 10% por pago en EFECTIVO = R$ -"+descuento+"\n\nPrecio Final = R$ "+costoFinalConDescuento);
-    
+    textoComprobante = `\nTOTAL\nTotal Habitaciones: $R ${precioHabitaciones}\nTotal IVA Habitaciones: $R ${ivaHabitaciones}\nTotal Servicios: $R ${precioServicios}\nTotal IVA Servicios: $R ${ivaServicios}\nDescuento del 10% por pago en EFECTIVO = R$ ${descuento}\n\nPrecio Final = R$ ${costoFinalConDescuento}`;
+    alert(textoComprobante);
     alert("GRACIAS POR SU COMPRA - DISFRUTE SU ESTADIA");
         
-    //FUNCIONES GENERALES.
-    //Costo sin impuestos por Tipo de Habitacion / Días / Huepedes.
-    function calcularCostoSinImpuestos(tipoDeHabitacion,cantidadDeDias,cantidadDeHuespedes){
-        let precioSinImpuestos;
-        switch (tipoDeHabitacion){
-            //Habitacion Doble con baño privado.
-            case '1':
-                precioSinImpuestos = ((DOBLEBPRIVPRECIO * cantidadDeDias) * cantidadDeHuespedes);
-                break;
-            //Habitacion Doble con baño compartido.
-            case '2':
-                precioSinImpuestos = ((DOBLEBCOMPPRECIO * cantidadDeDias) * cantidadDeHuespedes);
-                break;
-            //Habitabion compartida con baño privado.
-            case '3':
-                precioSinImpuestos = ((COMPARTIDABPRIVPRECIO * cantidadDeDias) * cantidadDeHuespedes);
-                break;
-            //Habitabion compartida con baño compartido.
-            case '4':
-                precioSinImpuestos = ((COMPARTIDABCOMPPRECIO * cantidadDeDias) * cantidadDeHuespedes);
-                break;
-            default:
-                precioSinImpuestos = 0;
-        }
-        return precioSinImpuestos;
-    }
-
-    //Costo Adicional por uso de AACC.
-    function calcularCostoAdicional(cantidadDeDias){
-        return (ADICAACC*cantidadDeDias);
-    }
-
-    //Calcular costo de impuestos.
-    function calcularImpuestos(costoSinImpuestos){
-        return (costoSinImpuestos * 0.21);
-    }
-
     //Calcular descuento.
     function calcularDescuento(costoFinalSinDescuento){
         return (costoFinalSinDescuento * 0.10);
-    }
-
-    //Descripción tipo de habitación.
-    function devolverTipoDeHabitacion(tipoDeHabitacion){
-        switch (tipoDeHabitacion){
-            case '1':
-                return ("Habitación Doble con baño privado");
-                break;
-            case '2':
-                return "Habitación Doble con baño compartido";
-                break;
-            case '3':
-                return "Habitación Compartida con baño privado";
-                break;
-            case '4':
-                return "Habitación Compartida con baño compartido";
-                break;
-            default:
-                return "Sin Habitación"
-        }
     }
 }
