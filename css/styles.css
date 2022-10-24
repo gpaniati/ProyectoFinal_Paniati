@@ -182,6 +182,14 @@ h4 {
 }
 /* FIN QUARTOS/SERVICIOS */
 
+/* FORMULARIO */
+.formulario{
+  margin: 10px;
+  border: 2px solid rgba(248, 180, 8, 0.6901960784);
+  border-radius: 5px;
+  padding: 15px 20px;
+}
+
 /* FOOTER */
 .footer {
   background: linear-gradient(90deg, #434343 0%, #434343 30%, #00ced1 100%);

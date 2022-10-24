@@ -1,17 +1,105 @@
 <!DOCTYPE html>
-<html lang="pr">
+<html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Keywords/Description Inicio -->
+    <meta name="description"
+        content="Aqui no Kuki's você tem quartos privativos com banheiro, ar condicionado e chuveiro quente. Temos quartos para casal, triplo, quádruplo e quintuplo privativos." />
+    <meta name="keywords"
+        content="kukis hostel, hostel brazil, hostel pipa, quartos privativos, quartos para casa, quartos triplo, quartos quádruplo, quartos quintuplo, banheiro, ar condicionado, chuveiro quente" />
+    <!-- Keywords/Description Fin -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2&family=Kaushan+Script&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+        integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon-32x32.png" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous" />
+    <link rel="stylesheet" href="../css/styles.css" />
     <title>Kuki's Hostel - Reservas</title>
 </head>
-    <h1>Simulador de Reservas</h1>
-    <a href="../index.html">Volver</a>
-    <!-- JavaScript -->
-    <script src="../javascript/habitaciones.js"></script>
-    <script src="../javascript/servicios.js"></script>
-    <script src="../javascript/entrega2.js"></script>
-    
+
+<body>
+    <!-- Inicio encabezado -->
+    <header class="header">
+        <div class="container-fluid row">
+            <!-- Logo y titulo principal -->
+            <a href="../index.html"><img src="../images/logokukis.webp" alt="logokukis" /></a>
+            <h1>Kuki's Hostel</h1>
+        </div>
+    </header>
+    <!-- Fin encabezado -->
+    <!-- Inicio del Main -->
+    <main class="principal">
+        <!-- Formulario de Ingreso de fechas y cantidad de personas -->
+        <form>
+            <div class="form-row formulario">
+                <div class="form-group col-md-3 col-sm-3">
+                    <label>Data admissão</label>
+                    <input type="date" class="form-control" id="inputFechaIngreso" />
+                </div>
+                <div class="form-group col-md-3 col-sm-3">
+                    <label>Data saída</label>
+                    <input type="date" class="form-control" id="inputFechaSalida" />
+                </div>
+                <div class="form-group col-md-3 col-sm-3">
+                    <label>Adultos</label>
+                    <select class="form-select">          
+                        <option selected>Open this select menu</option>     
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3 col-sm-3">
+                    <label>Crianças</label>
+                    <select class="form-select">          
+                        <option selected>Open this select menu</option>     
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </main>
+    <footer class="footer">
+        <div class="ubicacion">
+            <i class="fa-solid fa-location-dot"></i>
+            <p>Rua dos Cisnes, 20, Tibau do Sul - RN, Brasil</p>
+        </div>
+        <div class="redes">
+            <a href="https://www.facebook.com/kukishostelpipa/"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://www.instagram.com/kukishostel/?hl=es"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+        <p>Copyright All Rights Reserved</p>
+    </footer>
+    <!-- AOS Animacion - Parametros Generales -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 2000,
+            easing: "ease",
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
+        integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous">
+    </script>
 </body>
+
 </html>
