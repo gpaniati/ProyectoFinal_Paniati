@@ -184,8 +184,8 @@ h4 {
 
 /* FORMULARIO */
 .formulario{
-  margin: 10px;
-  border: 2px solid rgba(248, 180, 8, 0.6901960784);
+  margin: 20px;
+  border: 2px solid orange;
   border-radius: 5px;
   padding: 15px 20px;
 }
@@ -231,6 +231,11 @@ h4 {
   margin-bottom: 10px;
   border: 1px solid rgb(55, 55, 55);
   border-radius: 30px;
+}
+
+.botonConsulta{
+  margin-top: 25px;
+  margin-left: 0px;
 }
 .boton:hover {
   background-color: #75acec;
