@@ -1,0 +1,2 @@
+const carritoHabitaciones = [];
+const carritoServicios = [];
