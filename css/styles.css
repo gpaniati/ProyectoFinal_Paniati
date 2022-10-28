@@ -36,10 +36,10 @@ h4 {
   text-shadow: 1px 1px 2px white, 0 0 25px turquoise, 0 0 5px darkblue;
   font-family: "Kaushan Script", cursive;
 }
-
+/*
 .principal{
   height: 100vh;
-}
+}*/
 
 /* Importacion de archivos */
 /* HEADER */
@@ -173,6 +173,26 @@ h4 {
 .quartos .carta .card-img-quarto6 {
   content: url("../images/quartos/mamao.webp");
   box-shadow: inset 1px 2px black, 0 0 25px rgb(90, 92, 91), 0 0 5px rgb(218, 218, 218);
+}
+
+/* CARTAS DINAMICAS */
+.cartaDinamica{
+  width: 220px;
+  margin-top: 20px;
+}
+
+.cartaDinamica h4{
+  padding-left: 0;
+}
+
+.cartaDinamica p{
+  font-style: italic !important;
+  text-align: left;
+}
+
+.cartaDinamica .card-img-top {
+  border-radius: 30px;
+  opacity: 0.9;
 }
 
 /* Fin Mapa de Quartos */
