@@ -48,7 +48,7 @@ function mostrarHabitaciones(habitacionesDisponibles){
             <img src="${habitacion.imagenHabitacion}" class="card-img-top" alt="${habitacion.nombreHabitacion}">
             <div class="card-body">
                 <h4 class="card-title">${habitacion.nombreHabitacion}</h4>
-                <p class="card-text">Preço por pessoa: R$ ${habitacion.precioPorPersona}</p>
+                <p class="card-text">Precio por persona: R$ ${habitacion.precioPorPersona}</p>
                 <button id='botonAgregarHabitacion${habitacion.idHabitacion}'
                 class="btn btn-primary boton botonAgregar">Agregar</a>
             </div>
@@ -78,7 +78,7 @@ function mostrarServicios(serviciosDisponibles){
             <img src="${servicio.imagenServicio}" class="card-img-top" alt="${servicio.nombreServicio}">
             <div class="card-body">
                 <h4 class="card-title">${servicio.nombreServicio}</h4>
-                <p class="card-text">Preço por dia: R$ ${servicio.precioPorDia}</p>
+                <p class="card-text">Precio por dia: R$ ${servicio.precioPorDia}</p>
                 <button id='botonAgregarServicio${servicio.idServicio}'
                 class="btn btn-primary boton botonAgregar">Agregar</a>
             </div>
@@ -113,11 +113,21 @@ function agregarACarritoDeHabitaciones(habitacion) {
     }
 }
 
-function agregarACarritoDeServicios(servicio) {
-    carritoServicios.push(servicio);
-    console.table(carritoServicios);
+function agregarACarritoDeServicios(servicioElegido) {
+    let servicioYaElegido = false;
+    //Busco si el servicio ya fue seleccionado en el carrito de servicios.
+    servicioYaElegido = carritoServicios.some((servicio) => servicio.idServicio == servicioElegido.idServicio);
+    if (servicioYaElegido == false){
+        carritoServicios.push(servicioElegido);
+        console.table(carritoServicios);
+        alert("SERVICIO AÑADIDO CORRECTAMENTE, Continue eligiendo o finalice su reserva...")
+        mensajeAviso.innerText = ("");
+        mensajeError.innerText = ("");
+    }else{
+        mensajeAviso.innerText = ("");
+        mensajeError.innerText = ("Servicio ya elegido; seleccione otro o finalice su reserva" );
+    }
 }
-
 
 //FUNCIONES GENERALES
 

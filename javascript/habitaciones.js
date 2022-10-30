@@ -33,5 +33,5 @@ habitaciones.push(new Habitacion(1, "Quarto Manga", 130, 2 , "privado", "../imag
 habitaciones.push(new Habitacion(2, "Quarto Abacaxi", 50, 4, "compartido", "../images/quartos/abacaxi.webp"));
 habitaciones.push(new Habitacion(3, "Quarto Cajú", 80, 3, "privado", "../images/quartos/caju.webp"));
 habitaciones.push(new Habitacion(4, "Quarto Açaí", 60, 5, "privado", "../images/quartos/acai.webp"));
-habitaciones.push(new Habitacion(5, "Quarto Coco", 70, 4, "privado", "../images/quartos/coco.webp"));
+habitaciones.push(new Habitacion(5, "Quarto Coco", 70, 3, "privado", "../images/quartos/coco.webp"));
 habitaciones.push(new Habitacion(6, "Quarto Mamão", 130, 2, "privado", "../images/quartos/mamao.webp"));
