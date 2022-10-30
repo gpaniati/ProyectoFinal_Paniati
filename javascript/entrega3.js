@@ -31,14 +31,17 @@ function filtrarBusqueda() {
     if (qDiasHospedaje > 0){
         let habitacionesDisponibles = habitaciones.filter((habitacion) => ((habitacion.capacidad >= qHuespedes) && (habitacion.estaOcupada() == false)));
         mostrarHabitaciones(habitacionesDisponibles);
-        definirEventos(habitacionesDisponibles);
+        definirEventosHabitaciones(habitacionesDisponibles);
+        mensajeAviso.innerText = ("Selecciones la habitación deseada!!!");
     }
 }
 
+//HABITACIONES.
 //Muestra la grillas de habitaciones filtradas.
 function mostrarHabitaciones(habitacionesDisponibles){
     let cartaHabitaciones = document.getElementById("cardHabitaciones");
     cartaHabitaciones.innerHTML = ``;
+    cardServicios.innerHTML = ``;
     for (const habitacion of habitacionesDisponibles){
         let cartaDinamica = document.createElement("div");
         cartaDinamica.innerHTML = `
@@ -47,7 +50,7 @@ function mostrarHabitaciones(habitacionesDisponibles){
                 <h4 class="card-title">${habitacion.nombreHabitacion}</h4>
                 <p class="card-text">Preço por pessoa: R$ ${habitacion.precioPorPersona}</p>
                 <button id='botonAgregarHabitacion${habitacion.idHabitacion}'
-                class="btn btn-primary boton botonAgregarHabitacion">Agregar</a>
+                class="btn btn-primary boton botonAgregar">Agregar</a>
             </div>
         `;
         cartaHabitaciones.append(cartaDinamica);
@@ -56,7 +59,7 @@ function mostrarHabitaciones(habitacionesDisponibles){
 }
 
 //Funcion para definir eventos de todos los botones de habitaciones a seleccionar.
-function definirEventos(habitacionesDisponibles){
+function definirEventosHabitaciones(habitacionesDisponibles){
     habitacionesDisponibles.forEach((habitacion) => {
         document.getElementById(`botonAgregarHabitacion${habitacion.idHabitacion}`).addEventListener("click",function(){
             agregarACarritoDeHabitaciones(habitacion)
@@ -64,6 +67,35 @@ function definirEventos(habitacionesDisponibles){
     })
 }
 
+//SERVICIOS.
+//Muestra la grilla de servicios.
+function mostrarServicios(serviciosDisponibles){
+    let cartaServicios = document.getElementById("cardServicios");
+    cartaServicios.innerHTML = ``;
+    for (const servicio of serviciosDisponibles){
+        let cartaDinamica = document.createElement("div");
+        cartaDinamica.innerHTML = `
+            <img src="${servicio.imagenServicio}" class="card-img-top" alt="${servicio.nombreServicio}">
+            <div class="card-body">
+                <h4 class="card-title">${servicio.nombreServicio}</h4>
+                <p class="card-text">Preço por dia: R$ ${servicio.precioPorDia}</p>
+                <button id='botonAgregarServicio${servicio.idServicio}'
+                class="btn btn-primary boton botonAgregar">Agregar</a>
+            </div>
+        `;
+        cartaServicios.append(cartaDinamica);
+        cartaDinamica.className="cartaDinamica col-lg-3 col-md-4 col-sm-6 col-12";
+    }
+}
+
+//Funcion para definir eventos de todos los botones de servicios a seleccionar.
+function definirEventosServicios(serviciosDisponibles){
+    serviciosDisponibles.forEach((servicio) => {
+        document.getElementById(`botonAgregarServicio${servicio.idServicio}`).addEventListener("click",function(){
+            agregarACarritoDeServicios(servicio)
+        })
+    })
+}
 //AGREGAR A CARRITOS.
 function agregarACarritoDeHabitaciones(habitacion) {
     if (carritoHabitaciones.length == 1){
@@ -74,7 +106,10 @@ function agregarACarritoDeHabitaciones(habitacion) {
         //Limpio seccion de cartas de habitaciones.
         let cartaHabitaciones = document.getElementById("cardHabitaciones");
         cartaHabitaciones.innerHTML = ``;
-        mensajeAviso.innerText = ("Habitación agregada con exito!!!");
+        alert("Habitación agregada con exito!!!");
+        mensajeAviso.innerText = ("Selecciones los servicios deseados!!!");
+        mostrarServicios(servicios);
+        definirEventosServicios(servicios);
     }
 }
 

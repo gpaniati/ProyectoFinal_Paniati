@@ -1,9 +1,10 @@
 //BASE DE OBJETOS SERVICIO ALMACENADOS EN UN ARRAY.
 class Servicio {
-    constructor(idServicio, nombreServicio, precioPorDia) {
+    constructor(idServicio, nombreServicio, precioPorDia, imagenServicio) {
         this.idServicio = idServicio;
-        this.nombreServicio  = nombreServicio.toUpperCase();
+        this.nombreServicio  = nombreServicio;
         this.precioPorDia = parseFloat(precioPorDia);
+        this.imagenServicio = imagenServicio;
     }
 
     calcularIvaServicio(cantidadDias){
@@ -18,8 +19,8 @@ class Servicio {
 //Instanciamos objetos servicios manualmente y lo cargamos al array de servicios.
 //Declaramos un array de servicios para almacenar objetos
 const servicios = [];
-servicios.push(new Servicio(1, "aire acondicionado", 2));
-servicios.push(new Servicio(2, "desayuno", 10));
-servicios.push(new Servicio(3, "toalla pileta", 3));
-servicios.push(new Servicio(4, "locker", 5));
+servicios.push(new Servicio(1, "Aire acondicionado", 2, "../images/servicios/aireAcondicionado.webp"));
+servicios.push(new Servicio(2, "Desayuno", 10, "../images/servicios/desayuno.webp"));
+servicios.push(new Servicio(3, "Toalla pileta", 3, "../images/servicios/toallas.webp"));
+servicios.push(new Servicio(4, "Locker", 5, "../images/servicios/lockers.webp"));
 
