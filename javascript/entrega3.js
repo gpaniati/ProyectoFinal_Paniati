@@ -102,6 +102,7 @@ function agregarACarritoDeHabitaciones(habitacion) {
         mensajeError.innerText = ("Solo se puede seleccionar una habitación...");
     }else{
         carritoHabitaciones.push(habitacion);
+        agregarHabitacionALaLista(habitacion);
         console.table(carritoHabitaciones);
         //Limpio seccion de cartas de habitaciones.
         let cartaHabitaciones = document.getElementById("cardHabitaciones");
@@ -119,9 +120,10 @@ function agregarACarritoDeServicios(servicioElegido) {
     servicioYaElegido = carritoServicios.some((servicio) => servicio.idServicio == servicioElegido.idServicio);
     if (servicioYaElegido == false){
         carritoServicios.push(servicioElegido);
+        agregarServicioALaLista(servicioElegido);
         console.table(carritoServicios);
         alert("SERVICIO AÑADIDO CORRECTAMENTE, Continue eligiendo o finalice su reserva...")
-        mensajeAviso.innerText = ("");
+        //mensajeAviso.innerText = ("");
         mensajeError.innerText = ("");
     }else{
         mensajeAviso.innerText = ("");
@@ -131,6 +133,27 @@ function agregarACarritoDeServicios(servicioElegido) {
 
 //FUNCIONES GENERALES
 
+function agregarHabitacionALaLista(habitacion){
+    let cuerpotabla = document.getElementById("tablaBody");
+    let qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
+    let fechaIngreso = new Date(comboFechaIngreso.value);
+    let fechaSalida = new Date(comboFechaSalida.value);
+    let qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
+    let precio = habitacion.calcularPrecioHabitacion(qHuespedes,qDiasHospedaje);
+    cuerpotabla.innerHTML += `
+        <tr>
+            <th class="imagenTabla"><img src="${habitacion.imagenHabitacion}" width=60px height=100px alt="${habitacion.nombreHabitacion}"></th>
+            <td>${habitacion.nombreHabitacion} - $R ${habitacion.precioPorPersona}</td>
+            <td>${qHuespedes}</td>
+            <td>${qDiasHospedaje}</td>
+            <td>R$ ${precio}</td>
+        </tr>
+    `
+}
+
+function agregarServicioALaLista(servicio){
+
+}
 //Obtengo fecha actual.
 function obtenerFechaActual(){
     let fActual = new Date();

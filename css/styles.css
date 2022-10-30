@@ -36,6 +36,14 @@ h4 {
   text-shadow: 1px 1px 2px white, 0 0 25px turquoise, 0 0 5px darkblue;
   font-family: "Kaushan Script", cursive;
 }
+
+h6 {
+  color: #000000;
+  padding: 10px;
+  text-shadow: 1px 1px 2px white, 0 0 25px turquoise, 0 0 5px darkblue;
+  font-family: "Kaushan Script", cursive;
+  font-size: 16px;
+}
 /*
 .principal{
   height: 100vh;
@@ -224,6 +232,12 @@ h4 {
 #mensajeAviso {
   color: blue;
   font-weight: bold;
+}
+
+.imagenTabla{
+  padding: 0px;
+  margin: 0px;
+  text-align: center;
 }
 /* FIN FORMULARIO */
 
