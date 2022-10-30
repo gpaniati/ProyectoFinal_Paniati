@@ -5,7 +5,8 @@ const carritoServicios = [];
 let comboFechaIngreso = document.getElementById("inputFechaIngreso");
 let comboFechaSalida = document.getElementById("inputFechaSalida");
 let comboHuespedes = document.getElementById("inputHuespedes");
-let mensajeError = document.getElementById("mensajeError")
+let mensajeError = document.getElementById("mensajeError");
+let mensajeAviso = document.getElementById("mensajeAviso")
 //Inicializo los combos de fechas con la fecha del dia.
 comboFechaIngreso.value = (obtenerFechaActual())[0];
 comboFechaSalida.value = (obtenerFechaActual())[0];
@@ -14,8 +15,14 @@ comboFechaSalida.value = (obtenerFechaActual())[0];
 let botonConsulta = document.getElementById("botonConsulta");
 botonConsulta.addEventListener("click", filtrarBusqueda);
 
-
+//Filtro array de habiataciones segun condiciones de búsqueda.
 function filtrarBusqueda() {
+    //Limpio carrito habitaciones.
+    carritoHabitaciones.splice(0,carritoHabitaciones.length)
+    //Limpio errores y avisos.
+    mensajeError.innerText = ("");
+    mensajeAviso.innerText = ("");
+    //Obtengo parámetros de busqueda.
     let fechaIngreso = new Date(comboFechaIngreso.value);
     let fechaSalida = new Date(comboFechaSalida.value);
     let qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
@@ -24,9 +31,11 @@ function filtrarBusqueda() {
     if (qDiasHospedaje > 0){
         let habitacionesDisponibles = habitaciones.filter((habitacion) => ((habitacion.capacidad >= qHuespedes) && (habitacion.estaOcupada() == false)));
         mostrarHabitaciones(habitacionesDisponibles);
+        definirEventos(habitacionesDisponibles);
     }
 }
 
+//Muestra la grillas de habitaciones filtradas.
 function mostrarHabitaciones(habitacionesDisponibles){
     let cartaHabitaciones = document.getElementById("cardHabitaciones");
     cartaHabitaciones.innerHTML = ``;
@@ -37,7 +46,8 @@ function mostrarHabitaciones(habitacionesDisponibles){
             <div class="card-body">
                 <h4 class="card-title">${habitacion.nombreHabitacion}</h4>
                 <p class="card-text">Preço por pessoa: R$ ${habitacion.precioPorPersona}</p>
-                <a href="#" class="btn btn-primary boton botonAgregar">Agregar</a>
+                <button id='botonAgregarHabitacion${habitacion.idHabitacion}'
+                class="btn btn-primary boton botonAgregarHabitacion">Agregar</a>
             </div>
         `;
         cartaHabitaciones.append(cartaDinamica);
@@ -45,10 +55,27 @@ function mostrarHabitaciones(habitacionesDisponibles){
     }
 }
 
+//Funcion para definir eventos de todos los botones de habitaciones a seleccionar.
+function definirEventos(habitacionesDisponibles){
+    habitacionesDisponibles.forEach((habitacion) => {
+        document.getElementById(`botonAgregarHabitacion${habitacion.idHabitacion}`).addEventListener("click",function(){
+            agregarACarritoDeHabitaciones(habitacion)
+        })
+    })
+}
+
 //AGREGAR A CARRITOS.
 function agregarACarritoDeHabitaciones(habitacion) {
-    carritoHabitaciones.push(habitacion);
-    console.table(carritoHabitaciones);
+    if (carritoHabitaciones.length == 1){
+        mensajeError.innerText = ("Solo se puede seleccionar una habitación...");
+    }else{
+        carritoHabitaciones.push(habitacion);
+        console.table(carritoHabitaciones);
+        //Limpio seccion de cartas de habitaciones.
+        let cartaHabitaciones = document.getElementById("cardHabitaciones");
+        cartaHabitaciones.innerHTML = ``;
+        mensajeAviso.innerText = ("Habitación agregada con exito!!!");
+    }
 }
 
 function agregarACarritoDeServicios(servicio) {

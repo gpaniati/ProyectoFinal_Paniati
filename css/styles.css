@@ -218,6 +218,12 @@ h4 {
 
 #mensajeError {
   color: red;
+  font-weight: bold;
+}
+
+#mensajeAviso {
+  color: blue;
+  font-weight: bold;
 }
 /* FIN FORMULARIO */
 
@@ -264,21 +270,11 @@ h4 {
   margin-bottom: 10px;
 }
 
-.botonAgregar{
-  /*color: rgb(255, 255, 255);
-  background-color: #373737;
-  padding: 10px 20px;
-  border: 1px solid rgb(55, 55, 55);
-  border-radius: 30px;*/
+.botonAgregarHabitacion{
   margin: auto;
 }
 
 .botonConsulta{
-  /*color: rgb(255, 255, 255);
-  background-color: #373737;
-  padding: 10px 20px;
-  border: 1px solid rgb(55, 55, 55);
-  border-radius: 30px;*/
   margin-top: 25px;
   margin-left: 0px;
 }
