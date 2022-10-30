@@ -152,6 +152,7 @@ function agregarHabitacionALaLista(habitacion) {
             <td>R$ ${precio}</td>
         </tr>
     `
+    calcularTotalCarritos();
 }
 
 function agregarServicioALaLista(servicio) {
@@ -170,6 +171,19 @@ function agregarServicioALaLista(servicio) {
             <td>R$ ${precio}</td>
         </tr>
     `
+    calcularTotalCarritos();
+}
+
+function calcularTotalCarritos(){
+    let totalCarritos = 0;
+    let qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
+    let fechaIngreso = new Date(comboFechaIngreso.value);
+    let fechaSalida = new Date(comboFechaSalida.value);
+    let qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
+    let totalCarritoHabitaciones = carritoHabitaciones.reduce((acumulador,habitacion) => acumulador + (habitacion.precioPorPersona * qHuespedes * qDiasHospedaje),0);
+    let totalCarritoServicios = carritoServicios.reduce((acumulador,servicio) => acumulador + (servicio.precioPorDia * qDiasHospedaje),0);
+    totalCarritos = Math.round(totalCarritoHabitaciones + totalCarritoServicios);
+    document.getElementById("total").innerText = "Total a pagar:  R$ " + totalCarritos;
 }
 
 //Obtengo fecha actual.

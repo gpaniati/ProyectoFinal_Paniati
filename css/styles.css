@@ -40,9 +40,9 @@ h4 {
 h6 {
   color: #000000;
   padding: 10px;
-  text-shadow: 1px 1px 2px white, 0 0 25px turquoise, 0 0 5px darkblue;
-  font-family: "Kaushan Script", cursive;
-  font-size: 16px;
+  font-family: "Baloo 2", cursive;
+  font-weight: bold;
+  font-size: 20px;
 }
 /*
 .principal{
@@ -241,7 +241,7 @@ h6 {
 }
 
 .imagenTabla img{
-  border-radius: 15px;
+  border-radius: 20px;
 }
 
 /* FIN FORMULARIO */
