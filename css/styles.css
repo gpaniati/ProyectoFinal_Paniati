@@ -239,6 +239,11 @@ h6 {
   margin: 0px;
   text-align: center;
 }
+
+.imagenTabla img{
+  border-radius: 15px;
+}
+
 /* FIN FORMULARIO */
 
 /* FOOTER */
