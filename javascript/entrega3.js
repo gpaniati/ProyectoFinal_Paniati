@@ -124,7 +124,8 @@ function mostrarServicios(serviciosDisponibles) {
             </div>
         `;
         cartaServicios.append(cartaDinamica);
-        cartaDinamica.className = "cartaDinamica col-lg-3 col-md-4 col-sm-6 col-12";
+        //cartaDinamica.className = "cartaDinamica col-lg-3 col-md-4 col-sm-6 col-12";
+        cartaDinamica.className = "cartaDinamica col-lg-3 col-md-3 col-sm-4 col-6";
     }
 }
 
