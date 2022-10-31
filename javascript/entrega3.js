@@ -1,4 +1,4 @@
-//Array Carritos.
+//Arrays de Carritos.
 const carritoHabitaciones = [];
 const carritoServicios = [];
 //Objeto Datos de Busqueda.
@@ -10,7 +10,7 @@ let fechaIngreso;
 let fechaSalida;
 let qHuespedes; 
 let qDiasHospedaje; 
-
+//
 //Tomo control de los campos de busqueda.
 let comboFechaIngreso = document.getElementById("inputFechaIngreso");
 let comboFechaSalida = document.getElementById("inputFechaSalida");
@@ -30,6 +30,7 @@ if (datosBusquedaJson != null){
     comboFechaIngreso.value = (obtenerFechaActual())[0];
     comboFechaSalida.value = (obtenerFechaActual())[0];
 }
+//
 //Tomo control del boton de consulta y asigno evento.
 let botonConsulta = document.getElementById("botonConsulta");
 botonConsulta.addEventListener("click", filtrarBusqueda);
@@ -224,10 +225,17 @@ function obtenerFechaActual() {
 //Convertir fecha.
 function convertirFecha(fecha) {
     let dia = fecha.getDate();
+    if (dia < "10"){
+        dia = ("0" + fecha.getDate());
+    }
     let mes = fecha.getMonth() + 1;
+    if (mes < "10"){
+        mes = ("0" + (fecha.getMonth() + 1));
+    }
     let anio = fecha.getFullYear();
     //Formato AAAA-MM-DD
     let fechaFormateada = `${anio}-${mes}-${dia}`;
+    console.log(fechaFormateada);
     return (fechaFormateada);
 }
 
