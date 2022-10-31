@@ -9,6 +9,7 @@ El sistema calcula la cantidad de dias de su estancia segun las fechas ingresada
 Agregar habitacion deseada. (Solo se puede agregar una habitacion).
 
 Objetos del tipo SERVICIOS son todos los servicios ofrecidos por el hostel para contratar. Solo se puede contratar 1 vez cada uno.
+
 2) Se puede selecciona 1, varios, todos o ninguno para finalizar la reserva. Si selecciona 1 mas de una vez arroja "mensaje rojo" h3 por pantalla.
 Agregar servicios deseados.
 
