@@ -76,12 +76,10 @@ if (cantidadDeHuespedes > 5){
 
     function agregarACarritoDeHabitaciones(habitacion) {
         carritoHabitaciones.push(habitacion);
-        //console.table(carritoHabitaciones);
     }
 
     function agregarACarritoDeServicios(servicio) {
         carritoServicios.push(servicio);
-        //console.table(carritoServicios);
     }
 
     //TIPO DE PAGO.

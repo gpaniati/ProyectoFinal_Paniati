@@ -1,16 +1,35 @@
+//Array Carritos.
 const carritoHabitaciones = [];
 const carritoServicios = [];
+//Objeto Datos de Busqueda.
+let datosBusquedaJson;
+let datosBusquedaObjeto;
+let jsonDatosBusqueda;
+//Variables globales.
+let fechaIngreso;
+let fechaSalida;
+let qHuespedes; 
+let qDiasHospedaje; 
 
 //Tomo control de los campos de busqueda.
 let comboFechaIngreso = document.getElementById("inputFechaIngreso");
 let comboFechaSalida = document.getElementById("inputFechaSalida");
 let comboHuespedes = document.getElementById("inputHuespedes");
 let mensajeError = document.getElementById("mensajeError");
-let mensajeAviso = document.getElementById("mensajeAviso")
-//Inicializo los combos de fechas con la fecha del dia.
-comboFechaIngreso.value = (obtenerFechaActual())[0];
-comboFechaSalida.value = (obtenerFechaActual())[0];
-
+let mensajeAviso = document.getElementById("mensajeAviso");
+//
+//Busco en Storage si hay datos de busqueda. Si hay, los seteo en los combos.
+datosBusquedaJson = localStorage.getItem("miBusqueda");
+datosBusquedaObjeto = JSON.parse(datosBusquedaJson);
+if (datosBusquedaJson != null){
+    comboFechaIngreso.value = datosBusquedaObjeto.fechaIngreso;
+    comboFechaSalida.value = datosBusquedaObjeto.fechaSalida;
+    comboHuespedes.value = datosBusquedaObjeto.qHuespedes;
+}else{
+    //Inicializo los combos de fechas con la fecha del dia.
+    comboFechaIngreso.value = (obtenerFechaActual())[0];
+    comboFechaSalida.value = (obtenerFechaActual())[0];
+}
 //Tomo control del boton de consulta y asigno evento.
 let botonConsulta = document.getElementById("botonConsulta");
 botonConsulta.addEventListener("click", filtrarBusqueda);
@@ -23,16 +42,21 @@ function filtrarBusqueda() {
     //Limpio errores y avisos.
     mensajeError.innerText = ("");
     mensajeAviso.innerText = ("");
-    //Limpio tabla
+    //Limpio tabla.
     let cuerpotabla = document.getElementById("tablaBody");
     cuerpotabla.innerHTML = ``;
     //Obtengo parámetros de busqueda.
-    let fechaIngreso = new Date(comboFechaIngreso.value);
-    let fechaSalida = new Date(comboFechaSalida.value);
-    let qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
-    let qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
+    fechaIngreso = new Date(comboFechaIngreso.value);
+    fechaSalida = new Date(comboFechaSalida.value);
+    qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
+    qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
     //Filtro las habitaciones a mostrar de acuerdo a la cantidad de huespedes.
     if (qDiasHospedaje > 0) {
+        //Cargo Objeto de Datos de busqueda en Local Storage.
+        datosBusqueda = new DatosBusqueda(convertirFecha(fechaIngreso), convertirFecha(fechaSalida), qHuespedes, qDiasHospedaje);
+        jsonDatosBusqueda = JSON.stringify(datosBusqueda);
+        localStorage.setItem("miBusqueda", jsonDatosBusqueda);
+        //Filtro Habitaciones.
         let habitacionesDisponibles = habitaciones.filter((habitacion) => ((habitacion.capacidad >= qHuespedes) && (habitacion.estaOcupada() == false)));
         mostrarHabitaciones(habitacionesDisponibles);
         definirEventosHabitaciones(habitacionesDisponibles);
@@ -107,7 +131,6 @@ function agregarACarritoDeHabitaciones(habitacion) {
     } else {
         carritoHabitaciones.push(habitacion);
         agregarHabitacionALaLista(habitacion);
-        //console.table(carritoHabitaciones);
         //Limpio seccion de cartas de habitaciones.
         let cartaHabitaciones = document.getElementById("cardHabitaciones");
         cartaHabitaciones.innerHTML = ``;
@@ -125,7 +148,6 @@ function agregarACarritoDeServicios(servicioElegido) {
     if (servicioYaElegido == false) {
         carritoServicios.push(servicioElegido);
         agregarServicioALaLista(servicioElegido);
-        //console.table(carritoServicios);
         alert("SERVICIO AÑADIDO CORRECTAMENTE, Continue eligiendo o finalice su reserva...")
         //mensajeAviso.innerText = ("");
         mensajeError.innerText = ("");
@@ -138,10 +160,10 @@ function agregarACarritoDeServicios(servicioElegido) {
 //FUNCIONES GENERALES
 function agregarHabitacionALaLista(habitacion) {
     let cuerpotabla = document.getElementById("tablaBody");
-    let qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
-    let fechaIngreso = new Date(comboFechaIngreso.value);
-    let fechaSalida = new Date(comboFechaSalida.value);
-    let qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
+    qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
+    fechaIngreso = new Date(comboFechaIngreso.value);
+    fechaSalida = new Date(comboFechaSalida.value);
+    qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
     let precio = habitacion.calcularPrecioHabitacion(qHuespedes, qDiasHospedaje);
     cuerpotabla.innerHTML += `
         <tr>
@@ -157,10 +179,10 @@ function agregarHabitacionALaLista(habitacion) {
 
 function agregarServicioALaLista(servicio) {
     let cuerpotabla = document.getElementById("tablaBody");
-    let qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
-    let fechaIngreso = new Date(comboFechaIngreso.value);
-    let fechaSalida = new Date(comboFechaSalida.value);
-    let qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
+    //let qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
+    fechaIngreso = new Date(comboFechaIngreso.value);
+    fechaSalida = new Date(comboFechaSalida.value);
+    qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
     let precio = servicio.calcularPrecioServicio(qDiasHospedaje);
     cuerpotabla.innerHTML += `
         <tr>
@@ -176,10 +198,10 @@ function agregarServicioALaLista(servicio) {
 
 function calcularTotalCarritos(){
     let totalCarritos = 0;
-    let qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
-    let fechaIngreso = new Date(comboFechaIngreso.value);
-    let fechaSalida = new Date(comboFechaSalida.value);
-    let qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
+    qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
+    fechaIngreso = new Date(comboFechaIngreso.value);
+    fechaSalida = new Date(comboFechaSalida.value);
+    qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
     let totalCarritoHabitaciones = carritoHabitaciones.reduce((acumulador,habitacion) => acumulador + (habitacion.precioPorPersona * qHuespedes * qDiasHospedaje),0);
     let totalCarritoServicios = carritoServicios.reduce((acumulador,servicio) => acumulador + (servicio.precioPorDia * qDiasHospedaje),0);
     totalCarritos = Math.round(totalCarritoHabitaciones + totalCarritoServicios);
@@ -199,6 +221,16 @@ function obtenerFechaActual() {
     return [fActualFormato1, fActualFormato2, fActual];
 }
 
+//Convertir fecha.
+function convertirFecha(fecha) {
+    let dia = fecha.getDate();
+    let mes = fecha.getMonth() + 1;
+    let anio = fecha.getFullYear();
+    //Formato AAAA-MM-DD
+    let fechaFormateada = `${anio}-${mes}-${dia}`;
+    return (fechaFormateada);
+}
+
 //Valida las fechas y calcula la cantidad de días entre ellas.
 function calcularDias(fIngreso, fSalida) {
     let fActual = (obtenerFechaActual())[2];
@@ -215,4 +247,15 @@ function calcularDias(fIngreso, fSalida) {
         }
     }
     return dias;
+}
+
+//USO DE STORAGE Y JSON.
+//Guardo los campos de busqueda que realizo el cliente la ultima vez antes de finalizar compra.
+class DatosBusqueda{
+    constructor(fechaIngreso, fechaSalida, qHuespedes, qDiasHospedaje) {
+        this.fechaIngreso = fechaIngreso;
+        this.fechaSalida = fechaSalida;
+        this.qHuespedes = qHuespedes;
+        this.qDiasHospedaje = qDiasHospedaje;
+    }
 }
