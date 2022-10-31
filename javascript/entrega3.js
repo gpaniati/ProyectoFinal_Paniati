@@ -35,9 +35,17 @@ if (datosBusquedaJson != null){
 //Tomo control del boton de consulta y asigno evento.
 let botonConsulta = document.getElementById("botonConsulta");
 botonConsulta.addEventListener("click", filtrarBusqueda);
-
+//Tomo control del boton de finalizar compra y asigno evento y lo desabilito.
+let botonFinalizar = document.getElementById("botonFinalizar");
+botonFinalizar.addEventListener("click", finalizarReserva);
+botonFinalizar.disabled = true;
+//Tomo control del boton de limpiar y asigno evento.
+let botonLimpiar = document.getElementById("botonLimpiar");
+botonLimpiar.addEventListener("click", limpiarReserva);
+//
 //Filtro array de habiataciones segun condiciones de búsqueda.
 function filtrarBusqueda() {
+    botonFinalizar.disabled = true;
     //Limpio carrito habitaciones.
     carritoHabitaciones.splice(0, carritoHabitaciones.length)
     carritoServicios.splice(0, carritoServicios.length)
@@ -71,7 +79,9 @@ function filtrarBusqueda() {
 function mostrarHabitaciones(habitacionesDisponibles) {
     let cartaHabitaciones = document.getElementById("cardHabitaciones");
     cartaHabitaciones.innerHTML = ``;
-    cardServicios.innerHTML = ``;
+    let cartaServicios = document.getElementById("cardServicios");
+    cartaServicios.innerHTML = ``;
+    //cardServicios.innerHTML = ``;
     for (const habitacion of habitacionesDisponibles) {
         let cartaDinamica = document.createElement("div");
         cartaDinamica.innerHTML = `
@@ -140,6 +150,7 @@ function agregarACarritoDeHabitaciones(habitacion) {
         mensajeAviso.innerText = ("Selecciones los servicios deseados!!!");
         mostrarServicios(servicios);
         definirEventosServicios(servicios);
+        botonFinalizar.disabled = false;
     }
 }
 
@@ -151,7 +162,6 @@ function agregarACarritoDeServicios(servicioElegido) {
         carritoServicios.push(servicioElegido);
         agregarServicioALaLista(servicioElegido);
         alert("SERVICIO AÑADIDO CORRECTAMENTE, Continue eligiendo o finalice su reserva...")
-        //mensajeAviso.innerText = ("");
         mensajeError.innerText = ("");
     } else {
         mensajeAviso.innerText = ("");
@@ -159,7 +169,6 @@ function agregarACarritoDeServicios(servicioElegido) {
     }
 }
 
-//FUNCIONES GENERALES
 function agregarHabitacionALaLista(habitacion) {
     let cuerpotabla = document.getElementById("tablaBody");
     qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
@@ -209,6 +218,44 @@ function calcularTotalCarritos(){
     document.getElementById("total").innerText = "Total a pagar:  R$ " + totalCarritos;
 }
 
+function finalizarReserva(){
+    alert("RESERVA CONFIRMADA CORRECTAMENTE!!! , Disfrute su estadía")
+    //Limpio carrito habitaciones.
+    carritoHabitaciones.splice(0, carritoHabitaciones.length)
+    carritoServicios.splice(0, carritoServicios.length)
+    //Limpio errores y avisos.
+    mensajeError.innerText = ("");
+    mensajeAviso.innerText = ("");
+    //Limpio tabla.
+    let cuerpotabla = document.getElementById("tablaBody");
+    cuerpotabla.innerHTML = ``;
+    let cartaHabitaciones = document.getElementById("cardHabitaciones");
+    cartaHabitaciones.innerHTML = ``;
+    let cartaServicios = document.getElementById("cardServicios");
+    cartaServicios.innerHTML = ``;
+    botonFinalizar.disabled = true;
+    //Limpio el Storage solo cuando finaliza la reserva.
+    localStorage.clear();
+}
+
+function limpiarReserva(){
+    //Limpio carrito habitaciones.
+    carritoHabitaciones.splice(0, carritoHabitaciones.length)
+    carritoServicios.splice(0, carritoServicios.length)
+    //Limpio errores y avisos.
+    mensajeError.innerText = ("");
+    mensajeAviso.innerText = ("");
+    //Limpio tabla.
+    let cuerpotabla = document.getElementById("tablaBody");
+    cuerpotabla.innerHTML = ``;
+    let cartaHabitaciones = document.getElementById("cardHabitaciones");
+    cartaHabitaciones.innerHTML = ``;
+    let cartaServicios = document.getElementById("cardServicios");
+    cartaServicios.innerHTML = ``;
+    botonFinalizar.disabled = true;
+}
+
+//FUNCIONES GENERALES
 //Obtengo fecha actual.
 function obtenerFechaActual() {
     let fActual = new Date();
