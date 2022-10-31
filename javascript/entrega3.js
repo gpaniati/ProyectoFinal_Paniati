@@ -18,6 +18,7 @@ let comboHuespedes = document.getElementById("inputHuespedes");
 let mensajeError = document.getElementById("mensajeError");
 let mensajeAviso = document.getElementById("mensajeAviso");
 //
+//STORAGE.
 //Busco en Storage si hay datos de busqueda. Si hay, los seteo en los combos.
 datosBusquedaJson = localStorage.getItem("miBusqueda");
 datosBusquedaObjeto = JSON.parse(datosBusquedaJson);
@@ -47,8 +48,8 @@ function filtrarBusqueda() {
     let cuerpotabla = document.getElementById("tablaBody");
     cuerpotabla.innerHTML = ``;
     //Obtengo parámetros de busqueda.
-    fechaIngreso = new Date(comboFechaIngreso.value);
-    fechaSalida = new Date(comboFechaSalida.value);
+    fechaIngreso = new Date(comboFechaIngreso.value+"T00:00:00");
+    fechaSalida = new Date(comboFechaSalida.value+"T00:00:00");
     qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
     qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
     //Filtro las habitaciones a mostrar de acuerdo a la cantidad de huespedes.
@@ -162,13 +163,13 @@ function agregarACarritoDeServicios(servicioElegido) {
 function agregarHabitacionALaLista(habitacion) {
     let cuerpotabla = document.getElementById("tablaBody");
     qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
-    fechaIngreso = new Date(comboFechaIngreso.value);
-    fechaSalida = new Date(comboFechaSalida.value);
+    fechaIngreso = new Date(comboFechaIngreso.value+"T00:00:00");
+    fechaSalida = new Date(comboFechaSalida.value+"T00:00:00");
     qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
     let precio = habitacion.calcularPrecioHabitacion(qHuespedes, qDiasHospedaje);
     cuerpotabla.innerHTML += `
         <tr>
-            <th class="imagenTabla"><img src="${habitacion.imagenHabitacion}" width=100px height=100px alt="${habitacion.nombreHabitacion}"></th>
+            <th class="imagenTabla"><img src="${habitacion.imagenHabitacion}" width=80px height=80px alt="${habitacion.nombreHabitacion}"></th>
             <td>${habitacion.nombreHabitacion} / $R ${habitacion.precioPorPersona}</td>
             <td>${qHuespedes}</td>
             <td>${qDiasHospedaje}</td>
@@ -180,14 +181,13 @@ function agregarHabitacionALaLista(habitacion) {
 
 function agregarServicioALaLista(servicio) {
     let cuerpotabla = document.getElementById("tablaBody");
-    //let qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
-    fechaIngreso = new Date(comboFechaIngreso.value);
-    fechaSalida = new Date(comboFechaSalida.value);
+    fechaIngreso = new Date(comboFechaIngreso.value+"T00:00:00");
+    fechaSalida = new Date(comboFechaSalida.value+"T00:00:00");
     qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
     let precio = servicio.calcularPrecioServicio(qDiasHospedaje);
     cuerpotabla.innerHTML += `
         <tr>
-            <th class="imagenTabla"><img src="${servicio.imagenServicio}" width=100px height=100px alt="${servicio.nombreHabitacion}"></th>
+            <th class="imagenTabla"><img src="${servicio.imagenServicio}" width=80px height=80px alt="${servicio.nombreHabitacion}"></th>
             <td>${servicio.nombreServicio} / $R ${servicio.precioPorDia}</td>
             <td></td>
             <td>${qDiasHospedaje}</td>
@@ -200,8 +200,8 @@ function agregarServicioALaLista(servicio) {
 function calcularTotalCarritos(){
     let totalCarritos = 0;
     qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
-    fechaIngreso = new Date(comboFechaIngreso.value);
-    fechaSalida = new Date(comboFechaSalida.value);
+    fechaIngreso = new Date(comboFechaIngreso.value+"T00:00:00");
+    fechaSalida = new Date(comboFechaSalida.value+"T00:00:00");
     qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
     let totalCarritoHabitaciones = carritoHabitaciones.reduce((acumulador,habitacion) => acumulador + (habitacion.precioPorPersona * qHuespedes * qDiasHospedaje),0);
     let totalCarritoServicios = carritoServicios.reduce((acumulador,servicio) => acumulador + (servicio.precioPorDia * qDiasHospedaje),0);
