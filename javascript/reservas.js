@@ -1,10 +1,16 @@
 //Arrays de Carritos.
 const carritoHabitaciones = [];
 const carritoServicios = [];
+//
+//JSON Habitaciones y productos.
+let habitacionesJson = [];
+let productosJson = [];
+//
 //Objeto Datos de Busqueda.
 let datosBusquedaJson;
 let datosBusquedaObjeto;
 let jsonDatosBusqueda;
+//
 //Variables globales.
 let fechaIngreso;
 let fechaSalida;
@@ -32,6 +38,11 @@ if (datosBusquedaJson != null){
     comboFechaSalida.value = (obtenerFechaActual())[0];
 }
 //
+//Tomo cotizacion de Real $R del Banco Nacion. 
+//Anido a esta funcion la consulta a los json de habitaciones y seervicios.
+obtenerCotizacionRealBNA();
+//
+//EVENTOS
 //Tomo control del boton de consulta y asigno evento.
 let botonConsulta = document.getElementById("botonConsulta");
 botonConsulta.addEventListener("click", filtrarBusqueda);
@@ -314,4 +325,25 @@ class DatosBusqueda{
         this.qHuespedes = qHuespedes;
         this.qDiasHospedaje = qDiasHospedaje;
     }
+}
+
+
+//APIS
+//Obtengo cotizacion del Real del Banco Nación"
+//Documentacion de esta API que encontre: https://github.com/Castrogiovanni20/api-dolar-argentina
+function obtenerCotizacionRealBNA(){
+    const urlReal='https://api.bluelytics.com.ar/v2/latest';
+    fetch(urlReal)
+        .then( respuesta => respuesta.json())
+        .then( datos => {
+            const realBNA = datos.blue;
+            console.log(realBNA);
+            /*document.getElementById("fila_prueba").innerHTML+=`
+                <p>Dolar compra: $ ${dolarBlue.value_buy} Dolar venta: $ ${dolarBlue.value_sell}</p>
+            `;
+            dolarCompra=dolarBlue.value_buy;
+            obtenerJSON();*/
+        })
+        //Catch del fetch
+        .catch(error => console.log("Error al obtener cotización"))
 }
