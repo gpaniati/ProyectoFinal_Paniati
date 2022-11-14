@@ -1,4 +1,4 @@
-PreEntregae_Paniati
+Proyecto Final_Paniati
 Proyecto Coder JavaScript - Kuki's Hostel.
 
 El codigo JS esta vinculado en la pagina reservas.html Son 3 archivos JS.
