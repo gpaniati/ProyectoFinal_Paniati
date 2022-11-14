@@ -1,0 +1,49 @@
+[{
+    "idHabitacion": 1,
+    "nombreHabitacion": "Quarto Manga",
+    "precioPorPersona": 130,
+    "capacidad": 2,
+    "tipoBanio": "privado",
+    "imagenHabitacion": "../images/quartos/manga.webp"
+},
+{
+    "idHabitacion": 2,
+    "nombreHabitacion": "Quarto Abacaxi",
+    "precioPorPersona": 50,
+    "capacidad": 4,
+    "tipoBanio": "compartido",
+    "imagenHabitacion": "../images/quartos/abacaxi.webp"
+},
+{
+    "idHabitacion": 3,
+    "nombreHabitacion": "Quarto Cajú",
+    "precioPorPersona": 80,
+    "capacidad": 3,
+    "tipoBanio": "privado",
+    "imagenHabitacion": "../images/quartos/caju.webp"
+},
+{
+    "idHabitacion": 4,
+    "nombreHabitacion": "Quarto Açaí",
+    "precioPorPersona": 60,
+    "capacidad": 5,
+    "tipoBanio": "privado",
+    "imagenHabitacion": "../images/quartos/acai.webp"
+},
+{
+    "idHabitacion": 5,
+    "nombreHabitacion": "Quarto Coco",
+    "precioPorPersona": 70,
+    "capacidad": 3,
+    "tipoBanio": "privado",
+    "imagenHabitacion": "../images/quartos/coco.webp"
+},
+{
+    "idHabitacion": 6,
+    "nombreHabitacion": "Quarto Mamão",
+    "precioPorPersona": 130,
+    "capacidad": 2,
+    "tipoBanio": "privado",
+    "imagenHabitacion": "../images/quartos/mamao.webp"
+}
+]

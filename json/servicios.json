@@ -1,0 +1,25 @@
+[{
+    "idServicio": 1,
+    "nombreServicio": "Aire acondicionado",
+    "precioPorDia": 2,
+    "imagenServicio": "../images/servicios/aireAcondicionado.webp"
+},
+{
+    "idServicio": 2,
+    "nombreServicio": "Desayuno",
+    "precioPorDia": 10,
+    "imagenServicio": "../images/servicios/desayuno.webp"
+},
+{
+    "idServicio": 3,
+    "nombreServicio": "Toalla pileta",
+    "precioPorDia": 3,
+    "imagenServicio": "../images/servicios/toallas.webp"
+},
+{
+    "idServicio": 4,
+    "nombreServicio": "Locker",
+    "precioPorDia": 5,
+    "imagenServicio": "../images/servicios/lockers.webp"
+}
+]
