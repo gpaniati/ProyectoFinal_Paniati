@@ -16,16 +16,16 @@ let fechaIngreso;
 let fechaSalida;
 let qHuespedes; 
 let qDiasHospedaje; 
+let cotizacionCompra;
 //
 //Tomo control de los campos de busqueda.
 let comboFechaIngreso = document.getElementById("inputFechaIngreso");
 let comboFechaSalida = document.getElementById("inputFechaSalida");
 let comboHuespedes = document.getElementById("inputHuespedes");
-let mensajeError = document.getElementById("mensajeError");
-let mensajeAviso = document.getElementById("mensajeAviso");
 //
 //STORAGE.
-//Busco en Storage si hay datos de busqueda. Si hay, los seteo en los combos.
+/*Busco en Storage si hay datos de busqueda antariores. Si hay, los seteo en los combos para que el usuario
+vuelva a poder consultar lo que se quedo. No guardo los carritos por si se agregaron habitaciones, etc*/
 datosBusquedaJson = localStorage.getItem("miBusqueda");
 datosBusquedaObjeto = JSON.parse(datosBusquedaJson);
 if (datosBusquedaJson != null){
@@ -38,15 +38,15 @@ if (datosBusquedaJson != null){
     comboFechaSalida.value = (obtenerFechaActual())[0];
 }
 //
-//Tomo cotizacion de Real $R del Banco Nacion. 
-//Anido a esta funcion la consulta a los json de habitaciones y seervicios.
-obtenerCotizacionRealBNA();
+//Tomo cotizacion del Dolar. 
+//Anido a esta funcion la consulta a los JSON de habitaciones y servicios.
+obtenerCotizacion();
 //
-//EVENTOS
+//ASIGNAR EVENTOS.
 //Tomo control del boton de consulta y asigno evento.
 let botonConsulta = document.getElementById("botonConsulta");
 botonConsulta.addEventListener("click", filtrarBusqueda);
-//Tomo control del boton de finalizar compra y asigno evento y lo desabilito.
+//Tomo control del boton de "finalizar compra", asigno evento y lo desabilito.
 let botonFinalizar = document.getElementById("botonFinalizar");
 botonFinalizar.addEventListener("click", finalizarReserva);
 botonFinalizar.disabled = true;
@@ -54,19 +54,17 @@ botonFinalizar.disabled = true;
 let botonLimpiar = document.getElementById("botonLimpiar");
 botonLimpiar.addEventListener("click", limpiarReserva);
 //
-//Filtro array de habiataciones segun condiciones de búsqueda.
+//FUNCIONES DEL SIMULADOR.
+//Filtro array de habitaciones segun condiciones de búsqueda.
 function filtrarBusqueda() {
     botonFinalizar.disabled = true;
     //Limpio carrito habitaciones.
     carritoHabitaciones.splice(0, carritoHabitaciones.length)
     carritoServicios.splice(0, carritoServicios.length)
-    //Limpio errores y avisos.
-    mensajeError.innerText = ("");
-    mensajeAviso.innerText = ("");
     //Limpio tabla.
     let cuerpotabla = document.getElementById("tablaBody");
     cuerpotabla.innerHTML = ``;
-    //Obtengo parámetros de busqueda.
+    //Obtengo parámetros de busqueda. EL "+"T00:00:00" es para que devuelva bien la fecha por el huso horario, sino a veces te devuelve el dia anterior.
     fechaIngreso = new Date(comboFechaIngreso.value+"T00:00:00");
     fechaSalida = new Date(comboFechaSalida.value+"T00:00:00");
     qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
@@ -74,32 +72,32 @@ function filtrarBusqueda() {
     //Filtro las habitaciones a mostrar de acuerdo a la cantidad de huespedes.
     if (qDiasHospedaje > 0) {
         //Cargo Objeto de Datos de busqueda en Local Storage.
-        datosBusqueda = new DatosBusqueda(convertirFecha(fechaIngreso), convertirFecha(fechaSalida), qHuespedes, qDiasHospedaje);
-        jsonDatosBusqueda = JSON.stringify(datosBusqueda);
+        datosBusquedaObjeto = new DatosBusqueda(convertirFecha(fechaIngreso), convertirFecha(fechaSalida), qHuespedes, qDiasHospedaje);
+        jsonDatosBusqueda = JSON.stringify(datosBusquedaObjeto);
         localStorage.setItem("miBusqueda", jsonDatosBusqueda);
         //Filtro Habitaciones.
-        let habitacionesDisponibles = habitaciones.filter((habitacion) => ((habitacion.capacidad >= qHuespedes) && (habitacion.estaOcupada() == false)));
+        let habitacionesDisponibles = habitacionesJson.filter(habitacion => habitacion.capacidad >= qHuespedes);
+        //Renderizo array de habitaciones disponibles.
         mostrarHabitaciones(habitacionesDisponibles);
         definirEventosHabitaciones(habitacionesDisponibles);
-        mensajeAviso.innerText = ("Selecciones la habitación deseada!!!");
+        //mensajeAviso.innerText = ("Selecciones la habitación deseada!!!");
     }
 }
-
+//
 //HABITACIONES.
-//Muestra la grillas de habitaciones filtradas.
+//Muestra la grilla de habitaciones filtradas en forma de cartas Boostrap. Se hace responsive.
 function mostrarHabitaciones(habitacionesDisponibles) {
     let cartaHabitaciones = document.getElementById("cardHabitaciones");
     cartaHabitaciones.innerHTML = ``;
     let cartaServicios = document.getElementById("cardServicios");
     cartaServicios.innerHTML = ``;
-    //cardServicios.innerHTML = ``;
     for (const habitacion of habitacionesDisponibles) {
         let cartaDinamica = document.createElement("div");
         cartaDinamica.innerHTML = `
             <img src="${habitacion.imagenHabitacion}" class="card-img-top" alt="${habitacion.nombreHabitacion}">
             <div class="card-body">
                 <h4 class="card-title">${habitacion.nombreHabitacion}</h4>
-                <p class="card-text">Precio por persona: R$ ${habitacion.precioPorPersona}</p>
+                <p class="card-text">Precio por persona: U$D $ ${habitacion.precioPorPersona}</p>
                 <button id='botonAgregarHabitacion${habitacion.idHabitacion}'
                 class="btn btn-primary boton botonAgregar">Agregar</a>
             </div>
@@ -117,9 +115,9 @@ function definirEventosHabitaciones(habitacionesDisponibles) {
         })
     })
 }
-
+//
 //SERVICIOS.
-//Muestra la grilla de servicios.
+//Muestra la grilla de servicios en forma de cartas Boostrap. Se hace responsive.
 function mostrarServicios(serviciosDisponibles) {
     let cartaServicios = document.getElementById("cardServicios");
     cartaServicios.innerHTML = ``;
@@ -129,13 +127,12 @@ function mostrarServicios(serviciosDisponibles) {
             <img src="${servicio.imagenServicio}" class="card-img-top" alt="${servicio.nombreServicio}">
             <div class="card-body">
                 <h4 class="card-title">${servicio.nombreServicio}</h4>
-                <p class="card-text">Precio por dia: R$ ${servicio.precioPorDia}</p>
+                <p class="card-text">Precio por dia: U$D $ ${servicio.precioPorDia}</p>
                 <button id='botonAgregarServicio${servicio.idServicio}'
                 class="btn btn-primary boton botonAgregar">Agregar</a>
             </div>
         `;
         cartaServicios.append(cartaDinamica);
-        //cartaDinamica.className = "cartaDinamica col-lg-3 col-md-4 col-sm-6 col-12";
         cartaDinamica.className = "cartaDinamica col-lg-3 col-md-3 col-sm-4 col-6";
     }
 }
@@ -148,18 +145,30 @@ function definirEventosServicios(serviciosDisponibles) {
         })
     })
 }
+//
+//FUNCIONES CARRITOS.
 //AGREGAR A CARRITOS.
 function agregarACarritoDeHabitaciones(habitacion) {
     if (carritoHabitaciones.length == 1) {
-        mensajeError.innerText = ("Solo se puede seleccionar una habitación...");
+        Swal.fire({
+            icon: 'error',
+            text: 'Solo se puede seleccionar una habitación...',
+        })
     } else {
         carritoHabitaciones.push(habitacion);
         agregarHabitacionALaLista(habitacion);
         //Limpio seccion de cartas de habitaciones.
-        let cartaHabitaciones = document.getElementById("cardHabitaciones");
-        cartaHabitaciones.innerHTML = ``;
-        alert("Habitación agregada con exito!!!");
-        mensajeAviso.innerText = ("Selecciones los servicios deseados!!!");
+        document.getElementById("cardHabitaciones").innerHTML = ``;
+        Swal.fire({
+            title: habitacion.nombreHabitacion,
+            text: 'Habitación seleccionada con exito!!!',
+            imageUrl: habitacion.imagenHabitacion,
+            imageWidth: 200,
+            imageHeight: 200,
+            imageAlt: habitacion.nombreHabitacion,
+            showConfirmButton: false,
+            timer: 1500
+        });
         mostrarServicios(servicios);
         definirEventosServicios(servicios);
         botonFinalizar.disabled = false;
@@ -187,7 +196,7 @@ function agregarHabitacionALaLista(habitacion) {
     fechaIngreso = new Date(comboFechaIngreso.value+"T00:00:00");
     fechaSalida = new Date(comboFechaSalida.value+"T00:00:00");
     qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
-    let precio = habitacion.calcularPrecioHabitacion(qHuespedes, qDiasHospedaje);
+    let precio = habitacion.precioPorPersona * qHuespedes * qDiasHospedaje;
     cuerpotabla.innerHTML += `
         <tr>
             <th class="imagenTabla"><img src="${habitacion.imagenHabitacion}" width=80px height=80px alt="${habitacion.nombreHabitacion}"></th>
@@ -235,16 +244,11 @@ function finalizarReserva(){
     //Limpio carrito habitaciones.
     carritoHabitaciones.splice(0, carritoHabitaciones.length)
     carritoServicios.splice(0, carritoServicios.length)
-    //Limpio errores y avisos.
-    mensajeError.innerText = ("");
-    mensajeAviso.innerText = ("");
-    //Limpio tabla.
-    let cuerpotabla = document.getElementById("tablaBody");
-    cuerpotabla.innerHTML = ``;
-    let cartaHabitaciones = document.getElementById("cardHabitaciones");
-    cartaHabitaciones.innerHTML = ``;
-    let cartaServicios = document.getElementById("cardServicios");
-    cartaServicios.innerHTML = ``;
+    //Limpio tabla, seccion de habitaciones y servicios.
+    document.getElementById("tablaBody").innerHTML = ``;
+    document.getElementById("cardHabitaciones").innerHTML = ``;
+    document.getElementById("cardServicios").innerHTML = ``;
+    //Deshabitito boton de "Finalizar Compra".
     botonFinalizar.disabled = true;
     //Limpio el Storage solo cuando finaliza la reserva.
     localStorage.clear();
@@ -254,9 +258,6 @@ function limpiarReserva(){
     //Limpio carrito habitaciones.
     carritoHabitaciones.splice(0, carritoHabitaciones.length)
     carritoServicios.splice(0, carritoServicios.length)
-    //Limpio errores y avisos.
-    mensajeError.innerText = ("");
-    mensajeAviso.innerText = ("");
     //Limpio tabla.
     let cuerpotabla = document.getElementById("tablaBody");
     cuerpotabla.innerHTML = ``;
@@ -294,7 +295,6 @@ function convertirFecha(fecha) {
     let anio = fecha.getFullYear();
     //Formato AAAA-MM-DD
     let fechaFormateada = `${anio}-${mes}-${dia}`;
-    console.log(fechaFormateada);
     return (fechaFormateada);
 }
 
@@ -303,14 +303,19 @@ function calcularDias(fIngreso, fSalida) {
     let fActual = (obtenerFechaActual())[2];
     let dias = 0;
     if (fIngreso < fActual) {
-        mensajeError.innerText = ("La fecha de entrada debe ser mayor a la fecha de HOY!!!");
+        Swal.fire({
+            icon: 'error',
+            text: 'La fecha de entrada debe ser mayor a la fecha de HOY!!!!',
+        })
     } else {
         if (fIngreso >= fSalida) {
-            mensajeError.innerText = ("La fecha de salida debe ser mayor a la fecha de entrada!!!");
+            Swal.fire({
+                icon: 'error',
+                text: 'La fecha de salida debe ser mayor a la fecha de entrada!!!',
+            })
         } else {
             let difFechas = fSalida.getTime() - fIngreso.getTime();
             dias = Math.round(difFechas / (1000 * 60 * 60 * 24));
-            mensajeError.innerText = ("");
         }
     }
     return dias;
@@ -326,24 +331,45 @@ class DatosBusqueda{
         this.qDiasHospedaje = qDiasHospedaje;
     }
 }
-
-
+//
 //APIS
-//Obtengo cotizacion del Real del Banco Nación"
-//Documentacion de esta API que encontre: https://github.com/Castrogiovanni20/api-dolar-argentina
-function obtenerCotizacionRealBNA(){
-    const urlReal='https://api.bluelytics.com.ar/v2/latest';
-    fetch(urlReal)
-        .then( respuesta => respuesta.json())
-        .then( datos => {
-            const realBNA = datos.blue;
-            console.log(realBNA);
-            /*document.getElementById("fila_prueba").innerHTML+=`
-                <p>Dolar compra: $ ${dolarBlue.value_buy} Dolar venta: $ ${dolarBlue.value_sell}</p>
-            `;
-            dolarCompra=dolarBlue.value_buy;
-            obtenerJSON();*/
+//Obtengo cotizacion
+function obtenerCotizacion(){
+    const urlCotizacion = "https://api.bluelytics.com.ar/v2/latest";
+    fetch(urlCotizacion)
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            const dolar = datos.blue;
+            console.log(dolar);
+            cotizacionCompra = dolar.value_buy;
+            obtenerDatosJson();
         })
-        //Catch del fetch
+        //Catch del fetch cotizacion.
         .catch(error => console.log("Error al obtener cotización"))
+}
+
+//Obtengo habitaciones y servicios de sus correspondientes JSON.
+function obtenerDatosJson(){
+    const urlHabitaciones = "../json/habitaciones.json";
+    fetch(urlHabitaciones)
+        .then (respuestaHabitaciones => respuestaHabitaciones.json())
+        .then (datosRecibidos => {
+            habitacionesJson = datosRecibidos.habitaciones;
+            console.log(habitacionesJson);
+            obtenerServicios();
+        })
+    //Catch del fetch habitaciones.
+    .catch(error => console.log("Error al obtener habitaciones"))
+}
+
+function obtenerServicios(){
+    const urlServicios = "../json/servicios.json";
+    fetch(urlServicios)
+        .then (respuestaServicios => respuestaServicios.json())
+        .then (datosRecibidos => {
+            serviciosJson = datosRecibidos.servicios;
+            console.log(serviciosJson);
+        })
+    //Catch del fetch servicios.
+    .catch(error => console.log("Error al obtener servicios"))
 }
