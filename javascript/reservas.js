@@ -14,8 +14,8 @@ let jsonDatosBusqueda;
 //Variables globales.
 let fechaIngreso;
 let fechaSalida;
-let qHuespedes; 
-let qDiasHospedaje; 
+let qHuespedes;
+let qDiasHospedaje;
 let cotizacionCompra;
 //
 //Tomo control de los campos de busqueda.
@@ -28,17 +28,17 @@ let comboHuespedes = document.getElementById("inputHuespedes");
 vuelva a poder consultar lo que se quedo. No guardo los carritos por si se agregaron habitaciones, etc*/
 datosBusquedaJson = localStorage.getItem("miBusqueda");
 datosBusquedaObjeto = JSON.parse(datosBusquedaJson);
-if (datosBusquedaJson != null){
+if (datosBusquedaJson != null) {
     comboFechaIngreso.value = datosBusquedaObjeto.fechaIngreso;
     comboFechaSalida.value = datosBusquedaObjeto.fechaSalida;
     comboHuespedes.value = datosBusquedaObjeto.qHuespedes;
-}else{
+} else {
     //Inicializo los combos de fechas con la fecha del dia.
-    comboFechaIngreso.value = (obtenerFechaActual())[0];
-    comboFechaSalida.value = (obtenerFechaActual())[0];
+    comboFechaIngreso.value = obtenerFechaActual()[0];
+    comboFechaSalida.value = obtenerFechaActual()[0];
 }
 //
-//Tomo cotizacion del Dolar. 
+//Tomo cotizacion del Dolar.
 //Anido a esta funcion la consulta a los JSON de habitaciones y servicios.
 obtenerCotizacion();
 //
@@ -59,28 +59,34 @@ botonLimpiar.addEventListener("click", limpiarReserva);
 function filtrarBusqueda() {
     botonFinalizar.disabled = true;
     //Limpio carrito habitaciones.
-    carritoHabitaciones.splice(0, carritoHabitaciones.length)
-    carritoServicios.splice(0, carritoServicios.length)
+    carritoHabitaciones.splice(0, carritoHabitaciones.length);
+    carritoServicios.splice(0, carritoServicios.length);
     //Limpio tabla.
-    let cuerpotabla = document.getElementById("tablaBody");
-    cuerpotabla.innerHTML = ``;
+    document.getElementById("tablaBody").innerHTML = ``;
     //Obtengo parámetros de busqueda. EL "+"T00:00:00" es para que devuelva bien la fecha por el huso horario, sino a veces te devuelve el dia anterior.
-    fechaIngreso = new Date(comboFechaIngreso.value+"T00:00:00");
-    fechaSalida = new Date(comboFechaSalida.value+"T00:00:00");
+    //Calculo cantidad de huespedes y dias de hospedaje.
+    fechaIngreso = new Date(comboFechaIngreso.value + "T00:00:00");
+    fechaSalida = new Date(comboFechaSalida.value + "T00:00:00");
     qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
     qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
     //Filtro las habitaciones a mostrar de acuerdo a la cantidad de huespedes.
     if (qDiasHospedaje > 0) {
         //Cargo Objeto de Datos de busqueda en Local Storage.
-        datosBusquedaObjeto = new DatosBusqueda(convertirFecha(fechaIngreso), convertirFecha(fechaSalida), qHuespedes, qDiasHospedaje);
+        datosBusquedaObjeto = new DatosBusqueda(
+            convertirFecha(fechaIngreso),
+            convertirFecha(fechaSalida),
+            qHuespedes,
+            qDiasHospedaje
+        );
         jsonDatosBusqueda = JSON.stringify(datosBusquedaObjeto);
         localStorage.setItem("miBusqueda", jsonDatosBusqueda);
         //Filtro Habitaciones.
-        let habitacionesDisponibles = habitacionesJson.filter(habitacion => habitacion.capacidad >= qHuespedes);
+        let habitacionesDisponibles = habitacionesJson.filter(
+            (habitacion) => habitacion.capacidad >= qHuespedes
+        );
         //Renderizo array de habitaciones disponibles.
         mostrarHabitaciones(habitacionesDisponibles);
         definirEventosHabitaciones(habitacionesDisponibles);
-        //mensajeAviso.innerText = ("Selecciones la habitación deseada!!!");
     }
 }
 //
@@ -110,10 +116,12 @@ function mostrarHabitaciones(habitacionesDisponibles) {
 //Funcion para definir eventos de todos los botones de habitaciones a seleccionar.
 function definirEventosHabitaciones(habitacionesDisponibles) {
     habitacionesDisponibles.forEach((habitacion) => {
-        document.getElementById(`botonAgregarHabitacion${habitacion.idHabitacion}`).addEventListener("click", function () {
-            agregarACarritoDeHabitaciones(habitacion)
-        })
-    })
+        document
+            .getElementById(`botonAgregarHabitacion${habitacion.idHabitacion}`)
+            .addEventListener("click", function () {
+                agregarACarritoDeHabitaciones(habitacion);
+            });
+    });
 }
 //
 //SERVICIOS.
@@ -140,10 +148,12 @@ function mostrarServicios(serviciosDisponibles) {
 //Funcion para definir eventos de todos los botones de servicios a seleccionar.
 function definirEventosServicios(serviciosDisponibles) {
     serviciosDisponibles.forEach((servicio) => {
-        document.getElementById(`botonAgregarServicio${servicio.idServicio}`).addEventListener("click", function () {
-            agregarACarritoDeServicios(servicio)
-        })
-    })
+        document
+            .getElementById(`botonAgregarServicio${servicio.idServicio}`)
+            .addEventListener("click", function () {
+                agregarACarritoDeServicios(servicio);
+            });
+    });
 }
 //
 //FUNCIONES CARRITOS.
@@ -151,99 +161,131 @@ function definirEventosServicios(serviciosDisponibles) {
 function agregarACarritoDeHabitaciones(habitacion) {
     if (carritoHabitaciones.length == 1) {
         Swal.fire({
-            icon: 'error',
-            text: 'Solo se puede seleccionar una habitación...',
-        })
+            icon: "error",
+            text: "Solo se puede seleccionar una habitación...",
+        });
     } else {
-        carritoHabitaciones.push(habitacion);
-        agregarHabitacionALaLista(habitacion);
+        let precioTotal = habitacion.precioPorPersona * qHuespedes * qDiasHospedaje;
+        //Creo un objeto reducido del habitacion. Tiene el precio total.
+        let habitacionAlCarrito = new HabitacionCarrito(
+            habitacion.idHabitacion,
+            habitacion.nombreHabitacion,
+            precioTotal,
+            habitacion.imagenHabitacion
+        );
+        carritoHabitaciones.push(habitacionAlCarrito);
+        agregarHabitacionALaLista(habitacionAlCarrito);
         //Limpio seccion de cartas de habitaciones.
         document.getElementById("cardHabitaciones").innerHTML = ``;
         Swal.fire({
             title: habitacion.nombreHabitacion,
-            text: 'Habitación seleccionada con exito!!!',
+            text: "Habitación seleccionada con exito!!!",
             imageUrl: habitacion.imagenHabitacion,
             imageWidth: 200,
             imageHeight: 200,
             imageAlt: habitacion.nombreHabitacion,
             showConfirmButton: false,
-            timer: 1500
+            timer: 1500,
         });
-        mostrarServicios(servicios);
-        definirEventosServicios(servicios);
+        mostrarServicios(serviciosJson);
+        definirEventosServicios(serviciosJson);
         botonFinalizar.disabled = false;
     }
 }
 
 function agregarACarritoDeServicios(servicioElegido) {
     let servicioYaElegido = false;
+    let precioTotal = 0;
     //Busco si el servicio ya fue seleccionado en el carrito de servicios.
     servicioYaElegido = carritoServicios.some((servicio) => servicio.idServicio == servicioElegido.idServicio);
     if (servicioYaElegido == false) {
-        carritoServicios.push(servicioElegido);
-        agregarServicioALaLista(servicioElegido);
-        alert("SERVICIO AÑADIDO CORRECTAMENTE, Continue eligiendo o finalice su reserva...")
-        mensajeError.innerText = ("");
+        switch (servicioElegido.tipoServicio) {
+            //Servicios de habitacion - Se cobra independientemente de la cantidad de huespedes.
+            case "habitacion":
+                precioTotal =  servicioElegido.precioPorDia * qDiasHospedaje;
+                break;
+            //Servicios de huespedes - Se cobran a cada huesped por cada dia de hospedaje.
+            case "huesped":
+                precioTotal =  servicioElegido.precioPorDia * qHuespedes * qDiasHospedaje;
+                break;
+            default:
+        }
+        //Creo un objeto reducido del servicio. Tiene el precio total.
+        let servicioAlCarrito = new ServicioCarrito(servicioElegido.idServicio, servicioElegido.nombreServicio, precioTotal, servicioElegido.imagenServicio);
+        carritoServicios.push(servicioAlCarrito);
+        agregarServicioALaLista(servicioAlCarrito);
+        Swal.fire({
+            title: servicioElegido.nombreServicio,
+            text: "Servicio seleccionado con exito!!!",
+            imageUrl: servicioElegido.imagenServicio,
+            imageWidth: 200,
+            imageHeight: 200,
+            imageAlt: servicioElegido.nombreServicio,
+            showConfirmButton: false,
+            timer: 1500,
+        });
     } else {
-        mensajeAviso.innerText = ("");
-        mensajeError.innerText = ("Servicio ya elegido; seleccione otro o finalice su reserva");
+        Swal.fire({
+            icon: "error",
+            text: "Servicio ya elegido; seleccione otro o finalice su reserva.",
+        });
     }
 }
 
-function agregarHabitacionALaLista(habitacion) {
+function agregarHabitacionALaLista(habitacionCarrito) {
     let cuerpotabla = document.getElementById("tablaBody");
-    qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
-    fechaIngreso = new Date(comboFechaIngreso.value+"T00:00:00");
-    fechaSalida = new Date(comboFechaSalida.value+"T00:00:00");
-    qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
-    let precio = habitacion.precioPorPersona * qHuespedes * qDiasHospedaje;
     cuerpotabla.innerHTML += `
         <tr>
-            <th class="imagenTabla"><img src="${habitacion.imagenHabitacion}" width=80px height=80px alt="${habitacion.nombreHabitacion}"></th>
-            <td>${habitacion.nombreHabitacion} / $R ${habitacion.precioPorPersona}</td>
+            <th class="imagenTabla"><img src="${habitacionCarrito.imagenHabitacion}" width=80px height=80px alt="${habitacionCarrito.nombreHabitacion}"></th>
+            <td>${habitacionCarrito.nombreHabitacion}</td>
             <td>${qHuespedes}</td>
             <td>${qDiasHospedaje}</td>
-            <td>R$ ${precio}</td>
+            <td>U$D $ ${habitacionCarrito.precioTotal}</td>
         </tr>
-    `
+        `;
     calcularTotalCarritos();
 }
 
-function agregarServicioALaLista(servicio) {
+function agregarServicioALaLista(servicioCarrito) {
     let cuerpotabla = document.getElementById("tablaBody");
-    fechaIngreso = new Date(comboFechaIngreso.value+"T00:00:00");
-    fechaSalida = new Date(comboFechaSalida.value+"T00:00:00");
-    qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
-    let precio = servicio.calcularPrecioServicio(qDiasHospedaje);
     cuerpotabla.innerHTML += `
         <tr>
-            <th class="imagenTabla"><img src="${servicio.imagenServicio}" width=80px height=80px alt="${servicio.nombreHabitacion}"></th>
-            <td>${servicio.nombreServicio} / $R ${servicio.precioPorDia}</td>
-            <td></td>
+            <th class="imagenTabla"><img src="${servicioCarrito.imagenServicio}" width=80px height=80px alt="${servicioCarrito.nombreHabitacion}"></th>
+            <td>${servicioCarrito.nombreServicio}</td>
+            <td>${qHuespedes}</td>
             <td>${qDiasHospedaje}</td>
-            <td>R$ ${precio}</td>
+            <td>U$D $ ${servicioCarrito.precioTotal}</td>
         </tr>
-    `
+        `;
     calcularTotalCarritos();
 }
 
-function calcularTotalCarritos(){
+function calcularTotalCarritos() {
     let totalCarritos = 0;
-    qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
-    fechaIngreso = new Date(comboFechaIngreso.value+"T00:00:00");
-    fechaSalida = new Date(comboFechaSalida.value+"T00:00:00");
-    qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
-    let totalCarritoHabitaciones = carritoHabitaciones.reduce((acumulador,habitacion) => acumulador + (habitacion.precioPorPersona * qHuespedes * qDiasHospedaje),0);
-    let totalCarritoServicios = carritoServicios.reduce((acumulador,servicio) => acumulador + (servicio.precioPorDia * qDiasHospedaje),0);
+    /* = comboHuespedes.options[comboHuespedes.selectedIndex].value;
+      fechaIngreso = new Date(comboFechaIngreso.value+"T00:00:00");
+      fechaSalida = new Date(comboFechaSalida.value+"T00:00:00");
+      qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);*/
+    let totalCarritoHabitaciones = carritoHabitaciones.reduce(
+        (acumulador, habitacion) =>
+        acumulador + habitacion.precioPorPersona * qHuespedes * qDiasHospedaje,
+        0
+    );
+    let totalCarritoServicios = carritoServicios.reduce(
+        (acumulador, servicio) =>
+        acumulador + servicio.precioPorDia * qDiasHospedaje,
+        0
+    );
     totalCarritos = Math.round(totalCarritoHabitaciones + totalCarritoServicios);
-    document.getElementById("total").innerText = "Total a pagar:  R$ " + totalCarritos;
+    document.getElementById("total").innerText =
+        "Total a pagar:  R$ " + totalCarritos;
 }
 
-function finalizarReserva(){
-    alert("RESERVA CONFIRMADA CORRECTAMENTE!!! , Disfrute su estadía")
+function finalizarReserva() {
+    alert("RESERVA CONFIRMADA CORRECTAMENTE!!! , Disfrute su estadía");
     //Limpio carrito habitaciones.
-    carritoHabitaciones.splice(0, carritoHabitaciones.length)
-    carritoServicios.splice(0, carritoServicios.length)
+    carritoHabitaciones.splice(0, carritoHabitaciones.length);
+    carritoServicios.splice(0, carritoServicios.length);
     //Limpio tabla, seccion de habitaciones y servicios.
     document.getElementById("tablaBody").innerHTML = ``;
     document.getElementById("cardHabitaciones").innerHTML = ``;
@@ -254,10 +296,10 @@ function finalizarReserva(){
     localStorage.clear();
 }
 
-function limpiarReserva(){
+function limpiarReserva() {
     //Limpio carrito habitaciones.
-    carritoHabitaciones.splice(0, carritoHabitaciones.length)
-    carritoServicios.splice(0, carritoServicios.length)
+    carritoHabitaciones.splice(0, carritoHabitaciones.length);
+    carritoServicios.splice(0, carritoServicios.length);
     //Limpio tabla.
     let cuerpotabla = document.getElementById("tablaBody");
     cuerpotabla.innerHTML = ``;
@@ -285,34 +327,34 @@ function obtenerFechaActual() {
 //Convertir fecha.
 function convertirFecha(fecha) {
     let dia = fecha.getDate();
-    if (dia < "10"){
-        dia = ("0" + fecha.getDate());
+    if (dia < "10") {
+        dia = "0" + fecha.getDate();
     }
     let mes = fecha.getMonth() + 1;
-    if (mes < "10"){
-        mes = ("0" + (fecha.getMonth() + 1));
+    if (mes < "10") {
+        mes = "0" + (fecha.getMonth() + 1);
     }
     let anio = fecha.getFullYear();
     //Formato AAAA-MM-DD
     let fechaFormateada = `${anio}-${mes}-${dia}`;
-    return (fechaFormateada);
+    return fechaFormateada;
 }
 
 //Valida las fechas y calcula la cantidad de días entre ellas.
 function calcularDias(fIngreso, fSalida) {
-    let fActual = (obtenerFechaActual())[2];
+    let fActual = obtenerFechaActual()[2];
     let dias = 0;
     if (fIngreso < fActual) {
         Swal.fire({
-            icon: 'error',
-            text: 'La fecha de entrada debe ser mayor a la fecha de HOY!!!!',
-        })
+            icon: "error",
+            text: "La fecha de entrada debe ser mayor a la fecha de HOY!!!!",
+        });
     } else {
         if (fIngreso >= fSalida) {
             Swal.fire({
-                icon: 'error',
-                text: 'La fecha de salida debe ser mayor a la fecha de entrada!!!',
-            })
+                icon: "error",
+                text: "La fecha de salida debe ser mayor a la fecha de entrada!!!",
+            });
         } else {
             let difFechas = fSalida.getTime() - fIngreso.getTime();
             dias = Math.round(difFechas / (1000 * 60 * 60 * 24));
@@ -323,7 +365,7 @@ function calcularDias(fIngreso, fSalida) {
 
 //USO DE STORAGE Y JSON.
 //Guardo los campos de busqueda que realizo el cliente la ultima vez antes de finalizar compra.
-class DatosBusqueda{
+class DatosBusqueda {
     constructor(fechaIngreso, fechaSalida, qHuespedes, qDiasHospedaje) {
         this.fechaIngreso = fechaIngreso;
         this.fechaSalida = fechaSalida;
@@ -334,42 +376,42 @@ class DatosBusqueda{
 //
 //APIS
 //Obtengo cotizacion
-function obtenerCotizacion(){
+function obtenerCotizacion() {
     const urlCotizacion = "https://api.bluelytics.com.ar/v2/latest";
     fetch(urlCotizacion)
-        .then(respuesta => respuesta.json())
-        .then(datos => {
+        .then((respuesta) => respuesta.json())
+        .then((datos) => {
             const dolar = datos.blue;
             console.log(dolar);
             cotizacionCompra = dolar.value_buy;
             obtenerDatosJson();
         })
         //Catch del fetch cotizacion.
-        .catch(error => console.log("Error al obtener cotización"))
+        .catch((error) => console.log("Error al obtener cotización"));
 }
 
 //Obtengo habitaciones y servicios de sus correspondientes JSON.
-function obtenerDatosJson(){
+function obtenerDatosJson() {
     const urlHabitaciones = "../json/habitaciones.json";
     fetch(urlHabitaciones)
-        .then (respuestaHabitaciones => respuestaHabitaciones.json())
-        .then (datosRecibidos => {
+        .then((respuestaHabitaciones) => respuestaHabitaciones.json())
+        .then((datosRecibidos) => {
             habitacionesJson = datosRecibidos.habitaciones;
             console.log(habitacionesJson);
             obtenerServicios();
         })
-    //Catch del fetch habitaciones.
-    .catch(error => console.log("Error al obtener habitaciones"))
+        //Catch del fetch habitaciones.
+        .catch((error) => console.log("Error al obtener habitaciones"));
 }
 
-function obtenerServicios(){
+function obtenerServicios() {
     const urlServicios = "../json/servicios.json";
     fetch(urlServicios)
-        .then (respuestaServicios => respuestaServicios.json())
-        .then (datosRecibidos => {
+        .then((respuestaServicios) => respuestaServicios.json())
+        .then((datosRecibidos) => {
             serviciosJson = datosRecibidos.servicios;
             console.log(serviciosJson);
         })
-    //Catch del fetch servicios.
-    .catch(error => console.log("Error al obtener servicios"))
+        //Catch del fetch servicios.
+        .catch((error) => console.log("Error al obtener servicios"));
 }
