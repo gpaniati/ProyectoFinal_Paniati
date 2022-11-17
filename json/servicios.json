@@ -1,28 +1,28 @@
 {
     "servicios": [
         {
-            "idServicio": 1,
+            "idServicio": "s1",
             "nombreServicio": "Aire acondicionado",
             "precioPorDia": 2,
             "imagenServicio": "../images/servicios/aireAcondicionado.webp",
             "tipoServicio": "habitacion"
         },
         {
-            "idServicio": 2,
+            "idServicio": "s2",
             "nombreServicio": "Desayuno",
             "precioPorDia": 10,
             "imagenServicio": "../images/servicios/desayuno.webp",
             "tipoServicio": "huesped"
         },
         {
-            "idServicio": 3,
+            "idServicio": "s3",
             "nombreServicio": "Toalla pileta",
             "precioPorDia": 3,
             "imagenServicio": "../images/servicios/toallas.webp",
             "tipoServicio": "huesped"
         },
         {
-            "idServicio": 4,
+            "idServicio": "s4",
             "nombreServicio": "Locker",
             "precioPorDia": 5,
             "imagenServicio": "../images/servicios/lockers.webp",

@@ -1,6 +1,5 @@
-//Arrays de Carritos.
-const carritoHabitaciones = [];
-const carritoServicios = [];
+//Array de Carrito.
+const carrito = [];
 //
 //JSON Habitaciones y productos.
 let habitacionesJson = [];
@@ -58,9 +57,8 @@ botonLimpiar.addEventListener("click", limpiarReserva);
 //Filtro array de habitaciones segun condiciones de búsqueda.
 function filtrarBusqueda() {
     botonFinalizar.disabled = true;
-    //Limpio carrito habitaciones.
-    carritoHabitaciones.splice(0, carritoHabitaciones.length);
-    carritoServicios.splice(0, carritoServicios.length);
+    //Limpio carrito.
+    carrito.slice(0, carrito.length);
     //Limpio tabla.
     document.getElementById("tablaBody").innerHTML = ``;
     //Obtengo parámetros de busqueda. EL "+"T00:00:00" es para que devuelva bien la fecha por el huso horario, sino a veces te devuelve el dia anterior.
@@ -119,7 +117,7 @@ function definirEventosHabitaciones(habitacionesDisponibles) {
         document
             .getElementById(`botonAgregarHabitacion${habitacion.idHabitacion}`)
             .addEventListener("click", function () {
-                agregarACarritoDeHabitaciones(habitacion);
+                agregarHabitacionACarrito(habitacion);
             });
     });
 }
@@ -151,30 +149,30 @@ function definirEventosServicios(serviciosDisponibles) {
         document
             .getElementById(`botonAgregarServicio${servicio.idServicio}`)
             .addEventListener("click", function () {
-                agregarACarritoDeServicios(servicio);
+                agregarServicioACarrito(servicio);
             });
     });
 }
 //
 //FUNCIONES CARRITOS.
-//AGREGAR A CARRITOS.
-function agregarACarritoDeHabitaciones(habitacion) {
-    if (carritoHabitaciones.length == 1) {
+//AGREGAR A CARRITO.
+function agregarHabitacionACarrito(habitacion) {
+    if (carrito.length == 1) {
         Swal.fire({
             icon: "error",
             text: "Solo se puede seleccionar una habitación...",
         });
     } else {
         let precioTotal = habitacion.precioPorPersona * qHuespedes * qDiasHospedaje;
-        //Creo un objeto reducido del habitacion. Tiene el precio total.
-        let habitacionAlCarrito = new HabitacionCarrito(
+        //Creo un objeto item del carrito (en este caso, habitacion). Tiene el precio total.
+        let itemAlCarrito = new ItemCarrito(
             habitacion.idHabitacion,
             habitacion.nombreHabitacion,
             precioTotal,
             habitacion.imagenHabitacion
         );
-        carritoHabitaciones.push(habitacionAlCarrito);
-        agregarHabitacionALaLista(habitacionAlCarrito);
+        carrito.push(itemAlCarrito);
+        agregarItemALaLista(itemAlCarrito);
         //Limpio seccion de cartas de habitaciones.
         document.getElementById("cardHabitaciones").innerHTML = ``;
         Swal.fire({
@@ -193,11 +191,11 @@ function agregarACarritoDeHabitaciones(habitacion) {
     }
 }
 
-function agregarACarritoDeServicios(servicioElegido) {
+function agregarServicioACarrito(servicioElegido) {
     let servicioYaElegido = false;
     let precioTotal = 0;
-    //Busco si el servicio ya fue seleccionado en el carrito de servicios.
-    servicioYaElegido = carritoServicios.some((servicio) => servicio.idServicio == servicioElegido.idServicio);
+    //Busco si el servicio ya agregado al carrito. Los servicios solo se pueden agregar una vez.
+    servicioYaElegido = carrito.some((item) => item.idItem == servicioElegido.idServicio);
     if (servicioYaElegido == false) {
         switch (servicioElegido.tipoServicio) {
             //Servicios de habitacion - Se cobra independientemente de la cantidad de huespedes.
@@ -210,10 +208,14 @@ function agregarACarritoDeServicios(servicioElegido) {
                 break;
             default:
         }
-        //Creo un objeto reducido del servicio. Tiene el precio total.
-        let servicioAlCarrito = new ServicioCarrito(servicioElegido.idServicio, servicioElegido.nombreServicio, precioTotal, servicioElegido.imagenServicio);
-        carritoServicios.push(servicioAlCarrito);
-        agregarServicioALaLista(servicioAlCarrito);
+        //Creo un objeto item del carrito (en este caso, servicio). Tiene el precio total.
+        let itemAlCarrito = new ItemCarrito(
+            servicioElegido.idServicio, 
+            servicioElegido.nombreServicio, 
+            precioTotal, 
+            servicioElegido.imagenServicio);
+        carrito.push(itemAlCarrito);
+        agregarItemALaLista(itemAlCarrito);
         Swal.fire({
             title: servicioElegido.nombreServicio,
             text: "Servicio seleccionado con exito!!!",
@@ -232,64 +234,35 @@ function agregarACarritoDeServicios(servicioElegido) {
     }
 }
 
-function agregarHabitacionALaLista(habitacionCarrito) {
+function agregarItemALaLista(itemCarrito) {
     let cuerpotabla = document.getElementById("tablaBody");
     cuerpotabla.innerHTML += `
         <tr>
-            <th class="imagenTabla"><img src="${habitacionCarrito.imagenHabitacion}" width=80px height=80px alt="${habitacionCarrito.nombreHabitacion}"></th>
-            <td>${habitacionCarrito.nombreHabitacion}</td>
+            <th class="imagenTabla"><img src="${itemCarrito.imagenItem}" width=80px height=80px alt="${itemCarrito.nombreItem}"></th>
+            <td>${itemCarrito.nombreItem}</td>
             <td>${qHuespedes}</td>
             <td>${qDiasHospedaje}</td>
-            <td>U$D $ ${habitacionCarrito.precioTotal}</td>
-        </tr>
-        `;
-    calcularTotalCarritos();
-}
-
-function agregarServicioALaLista(servicioCarrito) {
-    let cuerpotabla = document.getElementById("tablaBody");
-    cuerpotabla.innerHTML += `
-        <tr>
-            <th class="imagenTabla"><img src="${servicioCarrito.imagenServicio}" width=80px height=80px alt="${servicioCarrito.nombreHabitacion}"></th>
-            <td>${servicioCarrito.nombreServicio}</td>
-            <td>${qHuespedes}</td>
-            <td>${qDiasHospedaje}</td>
-            <td>U$D $ ${servicioCarrito.precioTotal}</td>
+            <td>U$D $ ${itemCarrito.precioTotalItem}</td>
         </tr>
         `;
     calcularTotalCarritos();
 }
 
 function calcularTotalCarritos() {
-    let totalCarritos = 0;
-    /* = comboHuespedes.options[comboHuespedes.selectedIndex].value;
-      fechaIngreso = new Date(comboFechaIngreso.value+"T00:00:00");
-      fechaSalida = new Date(comboFechaSalida.value+"T00:00:00");
-      qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);*/
-    let totalCarritoHabitaciones = carritoHabitaciones.reduce(
-        (acumulador, habitacion) =>
-        acumulador + habitacion.precioPorPersona * qHuespedes * qDiasHospedaje,
-        0
-    );
-    let totalCarritoServicios = carritoServicios.reduce(
-        (acumulador, servicio) =>
-        acumulador + servicio.precioPorDia * qDiasHospedaje,
-        0
-    );
-    totalCarritos = Math.round(totalCarritoHabitaciones + totalCarritoServicios);
-    document.getElementById("total").innerText =
-        "Total a pagar:  R$ " + totalCarritos;
+    let totalCarrito = 0;
+    totalCarrito = Math.round(carrito.reduce((acumulador, itemCarrito) => acumulador + itemCarrito.precioTotalItem,0));
+    document.getElementById("total").innerText = "Total a pagar:  U$D $ " + totalCarrito;
 }
 
 function finalizarReserva() {
     alert("RESERVA CONFIRMADA CORRECTAMENTE!!! , Disfrute su estadía");
-    //Limpio carrito habitaciones.
-    carritoHabitaciones.splice(0, carritoHabitaciones.length);
-    carritoServicios.splice(0, carritoServicios.length);
+    //Limpio carrito.
+    carrito.splice(0, carrito.length);
     //Limpio tabla, seccion de habitaciones y servicios.
     document.getElementById("tablaBody").innerHTML = ``;
     document.getElementById("cardHabitaciones").innerHTML = ``;
     document.getElementById("cardServicios").innerHTML = ``;
+    document.getElementById("total").innerText = "Total a pagar:  U$D $ ";
     //Deshabitito boton de "Finalizar Compra".
     botonFinalizar.disabled = true;
     //Limpio el Storage solo cuando finaliza la reserva.
@@ -297,16 +270,13 @@ function finalizarReserva() {
 }
 
 function limpiarReserva() {
-    //Limpio carrito habitaciones.
-    carritoHabitaciones.splice(0, carritoHabitaciones.length);
-    carritoServicios.splice(0, carritoServicios.length);
+    //Limpio carrito.
+    carrito.splice(0, carrito.length);
     //Limpio tabla.
-    let cuerpotabla = document.getElementById("tablaBody");
-    cuerpotabla.innerHTML = ``;
-    let cartaHabitaciones = document.getElementById("cardHabitaciones");
-    cartaHabitaciones.innerHTML = ``;
-    let cartaServicios = document.getElementById("cardServicios");
-    cartaServicios.innerHTML = ``;
+    document.getElementById("tablaBody").innerHTML = ``;
+    document.getElementById("cardHabitaciones").innerHTML = ``;
+    document.getElementById("cardServicios").innerHTML = ``;
+    document.getElementById("total").innerText = "Total a pagar:  U$D $ ";
     botonFinalizar.disabled = true;
 }
 

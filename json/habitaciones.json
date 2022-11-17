@@ -1,7 +1,7 @@
 {
     "habitaciones": [
         {
-            "idHabitacion": 1,
+            "idHabitacion": "h1",
             "nombreHabitacion": "Quarto Manga",
             "precioPorPersona": 130,
             "capacidad": 2,
@@ -9,7 +9,7 @@
             "imagenHabitacion": "../images/quartos/manga.webp"
         },
         {
-            "idHabitacion": 2,
+            "idHabitacion": "h2",
             "nombreHabitacion": "Quarto Abacaxi",
             "precioPorPersona": 50,
             "capacidad": 4,
@@ -17,7 +17,7 @@
             "imagenHabitacion": "../images/quartos/abacaxi.webp"
         },
         {
-            "idHabitacion": 3,
+            "idHabitacion": "h3",
             "nombreHabitacion": "Quarto Cajú",
             "precioPorPersona": 80,
             "capacidad": 3,
@@ -25,7 +25,7 @@
             "imagenHabitacion": "../images/quartos/caju.webp"
         },
         {
-            "idHabitacion": 4,
+            "idHabitacion": "h4",
             "nombreHabitacion": "Quarto Açaí",
             "precioPorPersona": 60,
             "capacidad": 5,
@@ -33,7 +33,7 @@
             "imagenHabitacion": "../images/quartos/acai.webp"
         },
         {
-            "idHabitacion": 5,
+            "idHabitacion": "h5",
             "nombreHabitacion": "Quarto Coco",
             "precioPorPersona": 70,
             "capacidad": 3,
@@ -41,7 +41,7 @@
             "imagenHabitacion": "../images/quartos/coco.webp"
         },
         {
-            "idHabitacion": 6,
+            "idHabitacion": "h6",
             "nombreHabitacion": "Quarto Mamão",
             "precioPorPersona": 130,
             "capacidad": 2,
