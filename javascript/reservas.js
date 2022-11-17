@@ -59,6 +59,7 @@ function filtrarBusqueda() {
     botonFinalizar.disabled = true;
     //Limpio carrito.
     carrito.slice(0, carrito.length);
+    document.getElementById("tituloSeccion").innerText = '';
     //Limpio tabla.
     document.getElementById("tablaBody").innerHTML = ``;
     //Obtengo parámetros de busqueda. EL "+"T00:00:00" es para que devuelva bien la fecha por el huso horario, sino a veces te devuelve el dia anterior.
@@ -95,13 +96,14 @@ function mostrarHabitaciones(habitacionesDisponibles) {
     cartaHabitaciones.innerHTML = ``;
     let cartaServicios = document.getElementById("cardServicios");
     cartaServicios.innerHTML = ``;
+    document.getElementById("tituloSeccion").innerText = 'Seleccione una Habitación';
     for (const habitacion of habitacionesDisponibles) {
         let cartaDinamica = document.createElement("div");
         cartaDinamica.innerHTML = `
             <img src="${habitacion.imagenHabitacion}" class="card-img-top" alt="${habitacion.nombreHabitacion}">
             <div class="card-body">
                 <h4 class="card-title">${habitacion.nombreHabitacion}</h4>
-                <p class="card-text">Precio por persona: U$D $ ${habitacion.precioPorPersona}</p>
+                <p class="card-text">Precio por huesped/día: U$D $ ${habitacion.precioPorPersona}</p>
                 <button id='botonAgregarHabitacion${habitacion.idHabitacion}'
                 class="btn btn-primary boton botonAgregar">Agregar</a>
             </div>
@@ -127,6 +129,7 @@ function definirEventosHabitaciones(habitacionesDisponibles) {
 function mostrarServicios(serviciosDisponibles) {
     let cartaServicios = document.getElementById("cardServicios");
     cartaServicios.innerHTML = ``;
+    document.getElementById("tituloSeccion").innerText = 'Seleccione los servicios disponibles';
     for (const servicio of serviciosDisponibles) {
         let cartaDinamica = document.createElement("div");
         cartaDinamica.innerHTML = `
@@ -169,10 +172,11 @@ function agregarHabitacionACarrito(habitacion) {
             habitacion.idHabitacion,
             habitacion.nombreHabitacion,
             precioTotal,
-            habitacion.imagenHabitacion
-        );
+            habitacion.imagenHabitacion,
+            "huesped");
+
         carrito.push(itemAlCarrito);
-        agregarItemALaLista(itemAlCarrito);
+        agregarItemALaTabla(itemAlCarrito);
         //Limpio seccion de cartas de habitaciones.
         document.getElementById("cardHabitaciones").innerHTML = ``;
         Swal.fire({
@@ -200,11 +204,11 @@ function agregarServicioACarrito(servicioElegido) {
         switch (servicioElegido.tipoServicio) {
             //Servicios de habitacion - Se cobra independientemente de la cantidad de huespedes.
             case "habitacion":
-                precioTotal =  servicioElegido.precioPorDia * qDiasHospedaje;
+                precioTotal =  (servicioElegido.precioPorDia * cotizacionCompra) * qDiasHospedaje;
                 break;
             //Servicios de huespedes - Se cobran a cada huesped por cada dia de hospedaje.
             case "huesped":
-                precioTotal =  servicioElegido.precioPorDia * qHuespedes * qDiasHospedaje;
+                precioTotal =  (servicioElegido.precioPorDia * cotizacionCompra) * qHuespedes * qDiasHospedaje;
                 break;
             default:
         }
@@ -213,9 +217,11 @@ function agregarServicioACarrito(servicioElegido) {
             servicioElegido.idServicio, 
             servicioElegido.nombreServicio, 
             precioTotal, 
-            servicioElegido.imagenServicio);
+            servicioElegido.imagenServicio,
+            servicioElegido.tipoServicio);
+
         carrito.push(itemAlCarrito);
-        agregarItemALaLista(itemAlCarrito);
+        agregarItemALaTabla(itemAlCarrito);
         Swal.fire({
             title: servicioElegido.nombreServicio,
             text: "Servicio seleccionado con exito!!!",
@@ -234,15 +240,19 @@ function agregarServicioACarrito(servicioElegido) {
     }
 }
 
-function agregarItemALaLista(itemCarrito) {
+function agregarItemALaTabla(itemCarrito) {
     let cuerpotabla = document.getElementById("tablaBody");
+    let qHuespedesTabla = "";
+    if (itemCarrito.tipoServicioItem == "huesped"){
+        qHuespedesTabla = qHuespedes;
+    }
     cuerpotabla.innerHTML += `
         <tr>
             <th class="imagenTabla"><img src="${itemCarrito.imagenItem}" width=80px height=80px alt="${itemCarrito.nombreItem}"></th>
             <td>${itemCarrito.nombreItem}</td>
-            <td>${qHuespedes}</td>
+            <td>${qHuespedesTabla}</td>
             <td>${qDiasHospedaje}</td>
-            <td>U$D $ ${itemCarrito.precioTotalItem}</td>
+            <td>$ ${itemCarrito.precioTotalItem}</td>
         </tr>
         `;
     calcularTotalCarritos();
@@ -251,32 +261,49 @@ function agregarItemALaLista(itemCarrito) {
 function calcularTotalCarritos() {
     let totalCarrito = 0;
     totalCarrito = Math.round(carrito.reduce((acumulador, itemCarrito) => acumulador + itemCarrito.precioTotalItem,0));
-    document.getElementById("total").innerText = "Total a pagar:  U$D $ " + totalCarrito;
+    document.getElementById("total").innerText = "Total a pagar: $ " + totalCarrito;
 }
 
 function finalizarReserva() {
-    alert("RESERVA CONFIRMADA CORRECTAMENTE!!! , Disfrute su estadía");
-    //Limpio carrito.
-    carrito.splice(0, carrito.length);
-    //Limpio tabla, seccion de habitaciones y servicios.
-    document.getElementById("tablaBody").innerHTML = ``;
-    document.getElementById("cardHabitaciones").innerHTML = ``;
-    document.getElementById("cardServicios").innerHTML = ``;
-    document.getElementById("total").innerText = "Total a pagar:  U$D $ ";
-    //Deshabitito boton de "Finalizar Compra".
-    botonFinalizar.disabled = true;
-    //Limpio el Storage solo cuando finaliza la reserva.
-    localStorage.clear();
+    Swal.fire({
+        title: 'Desea confirmar la reserva?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: 'green',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, confirmar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire(
+                'Reserva confirmada!',
+                'Disfrute su estadia. Recibira un mail con los detalles de su reserva',
+                'success'
+            )
+            //Limpio carrito.
+            carrito.splice(0, carrito.length);
+            //Limpio tabla, seccion de habitaciones y servicios.
+            document.getElementById("tituloSeccion").innerText = '';
+            document.getElementById("tablaBody").innerHTML = ``;
+            document.getElementById("cardHabitaciones").innerHTML = ``;
+            document.getElementById("cardServicios").innerHTML = ``;
+            document.getElementById("total").innerText = "Total a pagar: $ ";
+            //Deshabitito boton de "Finalizar Compra".
+            botonFinalizar.disabled = true;
+            //Limpio el Storage solo cuando finaliza la reserva.
+            localStorage.clear();
+        }
+    })
 }
 
 function limpiarReserva() {
     //Limpio carrito.
     carrito.splice(0, carrito.length);
     //Limpio tabla.
+    document.getElementById("tituloSeccion").innerText = '';
     document.getElementById("tablaBody").innerHTML = ``;
     document.getElementById("cardHabitaciones").innerHTML = ``;
     document.getElementById("cardServicios").innerHTML = ``;
-    document.getElementById("total").innerText = "Total a pagar:  U$D $ ";
+    document.getElementById("total").innerText = "Total a pagar: $ ";
     botonFinalizar.disabled = true;
 }
 
@@ -352,7 +379,6 @@ function obtenerCotizacion() {
         .then((respuesta) => respuesta.json())
         .then((datos) => {
             const dolar = datos.blue;
-            console.log(dolar);
             cotizacionCompra = dolar.value_buy;
             obtenerDatosJson();
         })
@@ -367,7 +393,6 @@ function obtenerDatosJson() {
         .then((respuestaHabitaciones) => respuestaHabitaciones.json())
         .then((datosRecibidos) => {
             habitacionesJson = datosRecibidos.habitaciones;
-            console.log(habitacionesJson);
             obtenerServicios();
         })
         //Catch del fetch habitaciones.
@@ -380,7 +405,6 @@ function obtenerServicios() {
         .then((respuestaServicios) => respuestaServicios.json())
         .then((datosRecibidos) => {
             serviciosJson = datosRecibidos.servicios;
-            console.log(serviciosJson);
         })
         //Catch del fetch servicios.
         .catch((error) => console.log("Error al obtener servicios"));
