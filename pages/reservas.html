@@ -40,14 +40,17 @@
         <!-- Formulario de Ingreso de fechas y cantidad de personas -->
         <form>
             <div class="form-row formulario">
+                <!-- Fecha de entrada -->
                 <div class="form-group col-md-3 col-sm-3">
                     <label>Fecha entrada</label>
                     <input type="date" class="form-control" id="inputFechaIngreso">
                 </div>
+                <!-- Fecha de Salida -->
                 <div class="form-group col-md-3 col-sm-3">
                     <label>Fecha Salida</label>
                     <input type="date" class="form-control" id="inputFechaSalida">
                 </div>
+                <!-- Cantidad de huespedes -->
                 <div class="form-group col-md-3 col-sm-3">
                     <label>Huespedes</label>
                     <select class="form-control" id="inputHuespedes">
@@ -58,7 +61,28 @@
                         <option>5</option>
                     </select>
                 </div>
-                <div class="form-group col-md-3 col-sm-3">
+                <!-- Nombre -->
+                <div class="form-group col-md-6 col-sm-6">
+                    <label class="form-label" for="form4Example1">* Nombre</label>
+                    <input type="text" id="inputNombre" class="form-control" name="nombre" placeholder="Ingrese su nombre">
+                </div>
+                <!-- Apellido -->
+                <div class="form-group col-md-6 col-sm-6">
+                    <label class="form-label" for="form4Example1">* Apellido</label>
+                    <input type="text" id="inputApellido" class="form-control" name="apellido" placeholder="Ingrese su apellido">
+                </div>
+                <!-- Email -->
+                <div class="form-group col-md-6 col-sm-6">
+                    <label class="form-label" for="form4Example2">* Email</label>
+                    <input type="email" id="inputEmail" class="form-control" name="email" placeholder="email@mail.com">
+                </div>
+                 <!-- Telefono -->
+                 <div class="form-group col-md-6 col-sm-6">
+                    <label class="form-label" for="form4Example2">* Teléfono</label>
+                    <input type="text" id="inputTelefono" class="form-control" name="Ingrese su teléfono">
+                </div>
+                <!-- Boton de Consulta -->
+                <div class="form-group col-md-6 col-sm-6">
                     <button type="button" class="btn btn-primary boton botonConsulta"
                         id="botonConsulta">Consultar</button>
                 </div>
@@ -108,7 +132,6 @@
         </div>
         <p>Copyright All Rights Reserved</p>
     </footer>
-  
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
     </script>

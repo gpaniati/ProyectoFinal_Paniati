@@ -17,24 +17,38 @@ let qHuespedes;
 let qDiasHospedaje;
 let cotizacionCompra;
 //
+//Expresiones regulares para validar campos.
+const ER_SOLOLETRAS = "^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$";
+const ER_EMAIL=/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
+const ER_SOLONUMEROS="^[0-9]+$";
+//
 //Tomo control de los campos de busqueda.
-let comboFechaIngreso = document.getElementById("inputFechaIngreso");
-let comboFechaSalida = document.getElementById("inputFechaSalida");
-let comboHuespedes = document.getElementById("inputHuespedes");
+let inputFechaIngreso = document.getElementById("inputFechaIngreso");
+let inputFechaSalida = document.getElementById("inputFechaSalida");
+let inputHuespedes = document.getElementById("inputHuespedes");
+let inputNombre = document.getElementById("inputNombre");
+let inputApellido = document.getElementById("inputApellido");
+let inputEmail = document.getElementById("inputEmail");
+let inputTelefono = document.getElementById("inputTelefono");
 //
 //STORAGE.
-/*Busco en Storage si hay datos de busqueda antariores. Si hay, los seteo en los combos para que el usuario
+/*Busco en Storage si hay datos de busqueda antariores. Si hay, los seteo en los inputs para que el usuario
 vuelva a poder consultar lo que se quedo. No guardo los carritos por si se agregaron habitaciones, etc*/
 datosBusquedaJson = localStorage.getItem("miBusqueda");
 datosBusquedaObjeto = JSON.parse(datosBusquedaJson);
 if (datosBusquedaJson != null) {
-    comboFechaIngreso.value = datosBusquedaObjeto.fechaIngreso;
-    comboFechaSalida.value = datosBusquedaObjeto.fechaSalida;
-    comboHuespedes.value = datosBusquedaObjeto.qHuespedes;
-} else {
-    //Inicializo los combos de fechas con la fecha del dia.
-    comboFechaIngreso.value = obtenerFechaActual()[0];
-    comboFechaSalida.value = obtenerFechaActual()[0];
+    inputFechaIngreso.value = datosBusquedaObjeto.fechaIngreso;
+    inputFechaSalida.value = datosBusquedaObjeto.fechaSalida;
+    inputHuespedes.value = datosBusquedaObjeto.qHuespedes;
+    inputNombre.value = datosBusquedaObjeto.nombre;
+    inputApellido.value = datosBusquedaObjeto.apellido;
+    inputEmail.value = datosBusquedaObjeto.email;
+    inputTelefono.value = datosBusquedaObjeto.telefono;
+}else{
+    //Inicializo los inputs de fechas con la fecha del dia.
+    //inicializarCampos();
+    inputFechaIngreso.value = obtenerFechaActual()[0];
+    inputFechaSalida.value = obtenerFechaActual()[0];
 }
 //
 //Tomo cotizacion del Dolar.
@@ -62,30 +76,80 @@ function filtrarBusqueda() {
     document.getElementById("tituloSeccion").innerText = '';
     //Limpio tabla.
     document.getElementById("tablaBody").innerHTML = ``;
-    //Obtengo parámetros de busqueda. EL "+"T00:00:00" es para que devuelva bien la fecha por el huso horario, sino a veces te devuelve el dia anterior.
-    //Calculo cantidad de huespedes y dias de hospedaje.
-    fechaIngreso = new Date(comboFechaIngreso.value + "T00:00:00");
-    fechaSalida = new Date(comboFechaSalida.value + "T00:00:00");
-    qHuespedes = comboHuespedes.options[comboHuespedes.selectedIndex].value;
-    qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
-    //Filtro las habitaciones a mostrar de acuerdo a la cantidad de huespedes.
-    if (qDiasHospedaje > 0) {
-        //Cargo Objeto de Datos de busqueda en Local Storage.
-        datosBusquedaObjeto = new DatosBusqueda(
-            convertirFecha(fechaIngreso),
-            convertirFecha(fechaSalida),
-            qHuespedes,
-            qDiasHospedaje
-        );
-        jsonDatosBusqueda = JSON.stringify(datosBusquedaObjeto);
-        localStorage.setItem("miBusqueda", jsonDatosBusqueda);
-        //Filtro Habitaciones.
-        let habitacionesDisponibles = habitacionesJson.filter(
+    //Valido datos del cliente.
+    let datosClienteOk = true;
+    datosClienteOk = validarDatosCliente();
+    if (datosClienteOk){
+        //Obtengo parámetros de busqueda. EL "+"T00:00:00" es para que devuelva bien la fecha por el huso horario, sino a veces te devuelve el dia anterior.
+        //Calculo cantidad de huespedes y dias de hospedaje.
+        fechaIngreso = new Date(inputFechaIngreso.value + "T00:00:00");
+        fechaSalida = new Date(inputFechaSalida.value + "T00:00:00");
+        qHuespedes = inputHuespedes.options[inputHuespedes.selectedIndex].value;
+        qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
+        //Filtro las habitaciones a mostrar de acuerdo a la cantidad de huespedes.
+        if (qDiasHospedaje > 0) {
+            //Cargo Objeto de Datos de busqueda en Local Storage.
+            console.log(inputApellido);
+            datosBusquedaObjeto = new DatosBusqueda(
+                convertirFecha(fechaIngreso),
+                convertirFecha(fechaSalida),
+                qHuespedes,
+                qDiasHospedaje,
+                inputNombre.value,
+                inputApellido.value,
+                inputEmail.value,
+                inputTelefono.value
+            );
+            jsonDatosBusqueda = JSON.stringify(datosBusquedaObjeto);
+            localStorage.setItem("miBusqueda", jsonDatosBusqueda);
+            //Filtro Habitaciones.
+            let habitacionesDisponibles = habitacionesJson.filter(
             (habitacion) => habitacion.capacidad >= qHuespedes
-        );
-        //Renderizo array de habitaciones disponibles.
-        mostrarHabitaciones(habitacionesDisponibles);
-        definirEventosHabitaciones(habitacionesDisponibles);
+            );
+            //Renderizo array de habitaciones disponibles.
+            mostrarHabitaciones(habitacionesDisponibles);
+            definirEventosHabitaciones(habitacionesDisponibles);
+        }
+    }
+}
+//Validar datos del cliente ingresados por pantalla.
+function validarDatosCliente(){
+    //Valido que el nombre no tenga numeros.
+    if (inputNombre.value.match(ER_SOLOLETRAS)==null){
+        Swal.fire({
+            icon: "error",
+            text: "El campo NOMBRE es obligatorio y debe contener SOLO LETRAS",
+        });
+        return false;
+    }else{
+        //Valido que el apellido no tenga numeros.
+        if (inputApellido.value.match(ER_SOLOLETRAS)==null){
+            Swal.fire({
+                icon: "error",
+                text: "El campo APELLIDO es obligatorio y debe contener SOLO LETRAS",
+            });
+            return false;
+        }else{
+            //Valido que el email sea correto.
+            if (inputEmail.value.match(ER_EMAIL)==null){
+                Swal.fire({
+                    icon: "error",
+                    text: "Campo EMAIL invalido",
+                });
+                return false;
+            }else{
+                //Valido que el telefono tenga solo numeros.
+                if (inputTelefono.value.match(ER_SOLONUMEROS)==null){
+                    Swal.fire({
+                        icon: "error",
+                        text: "El campo TELEFONO es obligatorio y debe contener SOLO NUMEROS",
+                    });
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+        }
     }
 }
 //
@@ -286,11 +350,12 @@ function finalizarReserva() {
             document.getElementById("tablaBody").innerHTML = ``;
             document.getElementById("cardHabitaciones").innerHTML = ``;
             document.getElementById("cardServicios").innerHTML = ``;
-            document.getElementById("total").innerText = "Total a pagar: $ ";
+            document.getElementById("total").innerText = "Total a pagar: $ 0,00";
             //Deshabitito boton de "Finalizar Compra".
             botonFinalizar.disabled = true;
             //Limpio el Storage solo cuando finaliza la reserva.
             localStorage.clear();
+            inicializarCampos();
         }
     })
 }
@@ -303,8 +368,9 @@ function limpiarReserva() {
     document.getElementById("tablaBody").innerHTML = ``;
     document.getElementById("cardHabitaciones").innerHTML = ``;
     document.getElementById("cardServicios").innerHTML = ``;
-    document.getElementById("total").innerText = "Total a pagar: $ ";
+    document.getElementById("total").innerText = "Total a pagar: $ 0,00";
     botonFinalizar.disabled = true;
+    inicializarCampos();
 }
 
 //FUNCIONES GENERALES
@@ -363,11 +429,15 @@ function calcularDias(fIngreso, fSalida) {
 //USO DE STORAGE Y JSON.
 //Guardo los campos de busqueda que realizo el cliente la ultima vez antes de finalizar compra.
 class DatosBusqueda {
-    constructor(fechaIngreso, fechaSalida, qHuespedes, qDiasHospedaje) {
+    constructor(fechaIngreso, fechaSalida, qHuespedes, qDiasHospedaje, nombre, apellido, email, telefono) {
         this.fechaIngreso = fechaIngreso;
         this.fechaSalida = fechaSalida;
         this.qHuespedes = qHuespedes;
         this.qDiasHospedaje = qDiasHospedaje;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+        this.telefono = telefono;
     }
 }
 //
@@ -408,4 +478,14 @@ function obtenerServicios() {
         })
         //Catch del fetch servicios.
         .catch((error) => console.log("Error al obtener servicios"));
+}
+
+//Inicializo los campos de busqueda de la pantalla.
+function inicializarCampos(){   
+    inputFechaIngreso.value = obtenerFechaActual()[0];
+    inputFechaSalida.value = obtenerFechaActual()[0];
+    inputNombre.value = "";
+    inputApellido.value = "";
+    inputEmail.value = "";
+    inputTelefono = "";
 }
