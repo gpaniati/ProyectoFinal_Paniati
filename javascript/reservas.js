@@ -46,7 +46,6 @@ if (datosBusquedaJson != null) {
     inputTelefono.value = datosBusquedaObjeto.telefono;
 }else{
     //Inicializo los inputs de fechas con la fecha del dia.
-    //inicializarCampos();
     inputFechaIngreso.value = obtenerFechaActual()[0];
     inputFechaSalida.value = obtenerFechaActual()[0];
 }
@@ -88,8 +87,7 @@ function filtrarBusqueda() {
         qDiasHospedaje = calcularDias(fechaIngreso, fechaSalida);
         //Filtro las habitaciones a mostrar de acuerdo a la cantidad de huespedes.
         if (qDiasHospedaje > 0) {
-            //Cargo Objeto de Datos de busqueda en Local Storage.
-            console.log(inputApellido);
+            //Cargo Objeto de Datos de busqueda en Local Storage.s
             datosBusquedaObjeto = new DatosBusqueda(
                 convertirFecha(fechaIngreso),
                 convertirFecha(fechaSalida),
