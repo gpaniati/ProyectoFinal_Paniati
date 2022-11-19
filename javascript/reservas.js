@@ -450,6 +450,8 @@ function obtenerCotizacion() {
         .then((datos) => {
             const dolar = datos.blue;
             cotizacionCompra = dolar.value_buy;
+            /*document.getElementById("cotizacion").innerHTML += `
+            <p>Dolar Compra: $ ${dolarBlue.value_buy} Dolar Venta: $ ${dolarBlue.value_sell}</p>`;*/
             obtenerDatosJson();
         })
         //Catch del fetch cotizacion.
@@ -487,5 +489,5 @@ function inicializarCampos(){
     inputNombre.value = "";
     inputApellido.value = "";
     inputEmail.value = "";
-    inputTelefono = "";
+    inputTelefono.value = "";
 }
