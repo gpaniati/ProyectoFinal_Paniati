@@ -71,7 +71,7 @@ botonLimpiar.addEventListener("click", limpiarReserva);
 function filtrarBusqueda() {
     botonFinalizar.disabled = true;
     //Limpio carrito.
-    carrito.slice(0, carrito.length);
+    carrito.splice(0, carrito.length);
     document.getElementById("tituloSeccion").innerText = '';
     //Limpio tabla.
     document.getElementById("tablaBody").innerHTML = ``;
